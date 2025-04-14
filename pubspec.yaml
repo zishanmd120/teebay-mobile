@@ -41,6 +41,11 @@ dependencies:
   http:
   dartz:
   shared_preferences:
+  file_picker:
+  image_picker:
+  dropdown_button2:
+  intl:
+  multi_dropdown:
 
 dev_dependencies:
   flutter_test:

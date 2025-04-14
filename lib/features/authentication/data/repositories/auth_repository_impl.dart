@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-
 import 'package:dartz/dartz.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/network/failure.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -12,11 +12,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
   final AuthSource _authSource;
 
-  // final SessionManager _sessionManager;
+  final SharedPreferences _sharedPreferences;
 
-  AuthRepositoryImpl(this._authSource,
-      // this._sessionManager,
-      );
+  AuthRepositoryImpl(this._authSource, this._sharedPreferences,);
 
   // @override
   // Future<NetworkResponse<LoginResponse>> login(String email, String password,) async {
@@ -60,6 +58,10 @@ class AuthRepositoryImpl implements AuthRepository {
       try {
         final response = LoginResponse.fromJson(jsonDecode(networkResponse.data));
         if (response.user != null) {
+          await _sharedPreferences.setString("fcm_token", "${response.user?.firebaseConsoleManagerToken}");
+          print(_sharedPreferences.getString("fcm_token"));
+          await _sharedPreferences.setString("user_id", "${response.user?.id}");
+          print(_sharedPreferences.getString("user_id"));
           return Right(response);
         } else {
           return Left(Failure(networkResponse.message ?? ""));

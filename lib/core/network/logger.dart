@@ -1,15 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:developer' as developer;
 
-// abstract class HttpLogger {
-//
-//   void debugLog(http.Response response);
-//
-//   void logUrl(String message);
-//
-//   void errorLog(String message);
-// }
-
 class HttpLogger {
   void debugLog(http.Response response) {
     print("DEBUG: ${response.statusCode} - ${response.body}");

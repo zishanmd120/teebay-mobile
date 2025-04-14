@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/logger.dart';
@@ -22,7 +23,10 @@ class AuthBindings extends Bindings{
     Get.lazyPut(() => AuthSource(Get.find<NetworkHttpClient>()));
 
     // Repository
-    Get.lazyPut<AuthRepository>(() => AuthRepositoryImpl(Get.find<AuthSource>()));
+    Get.lazyPut<AuthRepository>(() => AuthRepositoryImpl(
+      Get.find<AuthSource>(),
+      Get.find<SharedPreferences>(),
+    ));
 
     // UseCase
     Get.lazyPut(() => LoginInteractor(Get.find<AuthRepository>()));
