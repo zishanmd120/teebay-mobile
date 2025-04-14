@@ -6,8 +6,9 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-import 'package:teebay_mobile/features/home/presentation/screens/add_product_screen.dart';
+import 'package:teebay_mobile/features/product/presentation/screens/add_product_screen.dart';
 import 'package:teebay_mobile/main.dart';
+import 'package:teebay_mobile/main/routes/app_routes.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -143,7 +144,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: const Icon(Icons.add, color: Colors.white, size: 40,),
         ),
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const AddProductScreen(),),);
+          Get.toNamed(AppRoutes.addProduct);
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => const AddProductScreen(),),);
         },
       ),
     );

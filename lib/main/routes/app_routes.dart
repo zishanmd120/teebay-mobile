@@ -4,6 +4,7 @@ abstract class AppRoutes {
   static const authentication = '/authentication';
   static const login = '/login';
   static const dashboard = '/dashboard';
+  static const addProduct = '/addProduct';
   // static const dashboardWithParameter = '/dashboard/:id';
   // static const settings = '/settings';
   static const unknownRoutePage = '/notfound';
