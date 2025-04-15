@@ -46,6 +46,7 @@ dependencies:
   dropdown_button2:
   intl:
   multi_dropdown:
+  local_auth:   
 
 dev_dependencies:
   flutter_test:

@@ -49,6 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool selectedMaxLines = false;
 
+  bool biometricAuthentication = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,6 +76,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 trailing: const Icon(Icons.arrow_forward_ios, size: 20,),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const MyStoreScreen(),),);
+                },
+              ),
+              ListTile(
+                title: const Text("Biometric Auth",),
+                trailing: Switch(
+                  value: biometricAuthentication,
+                  onChanged: (value) {
+                    print(value);
+                    setState(() {
+                      biometricAuthentication = value;
+                    });
+                  },
+                ),
+                onTap: (){
+
                 },
               ),
             ],
@@ -154,7 +171,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         onTap: (){
           Get.toNamed(AppRoutes.addProduct);
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => const AddProductScreen(),),);
         },
       ),
     );
