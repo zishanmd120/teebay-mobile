@@ -61,10 +61,19 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              GestureDetector(
-                child: Text("My Data",),
+              const SizedBox(height: 50,),
+              ListTile(
+                title: const Text("My Profile",),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 20,),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const MyProfileScreen(),),);
+                },
+              ),
+              ListTile(
+                title: const Text("My Products",),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 20,),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const MyStoreScreen(),),);
                 },
               ),
             ],
