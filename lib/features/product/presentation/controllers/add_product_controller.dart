@@ -41,24 +41,31 @@ class AddProductController extends GetxController {
   final PageController pageController = PageController();
 
   late final List<Widget> pages;
-  int currentPage = 0;
+  RxInt currentPage = 0.obs;
+  RxBool isLastPage = false.obs;
 
   void nextPage() {
-    if (currentPage < pages.length - 1) {
+    if (currentPage.value < pages.length - 1) {
       pageController.nextPage(
           duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     }
   }
 
   void previousPage() {
-    if (currentPage > 0) {
+    if (currentPage.value > 0) {
       pageController.previousPage(
           duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     }
   }
 
+  void onPageChanged(int index) {
+    currentPage.value = index;
+    isLastPage.value = index == pages.length - 1;
+  }
+
   final ImagePicker picker = ImagePicker();
-  File? imageFile;
+  // File? imageFile;
+  Rx<File?> imageFile = Rx<File?>(null);
   Future<void> pickImage(BuildContext context) async {
     try {
       final XFile? pickedFile = await picker.pickImage(
@@ -68,7 +75,7 @@ class AddProductController extends GetxController {
 
       if (context.mounted) {
         if (pickedFile != null) {
-          imageFile = File(pickedFile.path);
+          imageFile.value = File(pickedFile.path);
           // setState(() {});
           // profileUpdate(); // if needed
         } else {
@@ -85,7 +92,7 @@ class AddProductController extends GetxController {
     final XFile? photo = await picker.pickImage(source: ImageSource.camera);
 
     if (photo != null) {
-      imageFile = File(photo.path);
+      imageFile.value = File(photo.path);
     }
   }
 
@@ -121,7 +128,7 @@ class AddProductController extends GetxController {
 
       request.files.add(await http.MultipartFile.fromPath(
         'product_image',
-        imageFile!.path,
+        imageFile.value?.path ?? "",
       ));
 
       request.headers.addAll(headers);

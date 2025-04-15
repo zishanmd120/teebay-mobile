@@ -13,7 +13,6 @@ class AddProductScreen extends GetView<AddProductController> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isLastPage = controller.currentPage == controller.pages.length - 1;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -23,14 +22,14 @@ class AddProductScreen extends GetView<AddProductController> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0,),
-        child: Column(
+        child: Obx(() => Column(
           children: [
             Expanded(
               child: PageView(
                 controller: controller.pageController,
                 onPageChanged: (index) {
-                  // setState(() => _currentPage = index);
-                  controller.currentPage = index;
+                  // controller.currentPage.value = index;
+                  controller.onPageChanged(index);
                 },
                 children: controller.pages,
               ),
@@ -40,7 +39,7 @@ class AddProductScreen extends GetView<AddProductController> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  if (controller.currentPage != 0)
+                  if (controller.currentPage.value != 0)
                     ElevatedButton(
                       onPressed: controller.previousPage,
                       child: const Text('Back'),
@@ -50,15 +49,15 @@ class AddProductScreen extends GetView<AddProductController> {
 
                   ElevatedButton(
                     onPressed: (){
-                      isLastPage ? controller.submitButton(context) : controller.nextPage();
+                      controller.isLastPage.value ? controller.submitButton(context) : controller.nextPage();
                     },
-                    child: Text(isLastPage ? 'Submit' : 'Next'),
+                    child: Text(controller.isLastPage.value ? 'Submit' : 'Next'),
                   ),
                 ],
               ),
             ),
           ],
-        ),
+        ),),
       ),
     );
   }
@@ -263,13 +262,13 @@ class _PageFourState extends State<PageFour> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            Obx(() => Container(
               height: 200,
               width: 200,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: controller.imageFile != null
-                      ? FileImage(File((controller.imageFile?.path ?? "")))
+                  image: controller.imageFile.value != null
+                      ? FileImage(File((controller.imageFile.value?.path ?? "")))
                       : const NetworkImage(
                     "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg",
                   ),
@@ -278,7 +277,7 @@ class _PageFourState extends State<PageFour> {
                 borderRadius: BorderRadius.circular(5),
               ),
               // child: D,
-            ),
+            ),),
           ],
         ),
         const SizedBox(height: 20,),
@@ -383,10 +382,39 @@ class PageSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final controller = Get.find<AddProductController>();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Page Summary", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold,),),
-        Text("Title: PS5", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold,),),
+        const Text("Summary", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,),),
+        const SizedBox(height: 30,),
+        Text("Title: ${controller.titleEditingController.text}",
+          style: const TextStyle(fontSize: 17,),
+        ),
+        const SizedBox(height: 10,),
+        Row(
+          children: [
+            const Text("Categories: ",
+              style: TextStyle(fontSize: 17,),
+            ),
+            for(int i = 0; i < controller.selectedCategoryList.length; i++)
+              Text("${controller.selectedCategoryList[i]}, ",
+                style: const TextStyle(fontSize: 17,),
+              ),
+          ],
+        ),
+        const SizedBox(height: 10,),
+        Text("Description: ${controller.descriptionEditingController.text}",
+          style: const TextStyle(fontSize: 17, ),
+        ),
+        const SizedBox(height: 10,),
+        Text("Purchase Price: ${controller.descriptionEditingController.text}",
+          style: const TextStyle(fontSize: 17,),
+        ),
+        const SizedBox(height: 10,),
+        Text("Rent Price: ${controller.rpEditingController.text} / ${controller.selectedOption}",
+          style: const TextStyle(fontSize: 17,),
+        ),
       ],
     );
   }
