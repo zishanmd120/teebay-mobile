@@ -1,6 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../main/routes/app_routes.dart';
 import '../controllers/auth_controller.dart';
 import '../widgets/app_logo_widget.dart';
 import '../widgets/auth_submit_button_widget.dart';
@@ -17,46 +19,83 @@ class LoginScreen extends GetView<AuthController> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0,),
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 40,),
-              const AppLogoWidget(),
-              const Text(
-                "Login to the TeeBay App.",
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
+          child: Form(
+            key: controller.loginFormKey,
+            child: Column(
+              children: [
+                const SizedBox(height: 40,),
+                const AppLogoWidget(),
+                const Text(
+                  "Login to the TeeBay App.",
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20,),
-              const AuthTextHeadWidget(
-                title: "Email",
-              ),
-              AuthenticationTextFieldWidget(
-                controller: controller.emailEditingController,
-                focusNode: controller.nameFocusNode,
-                hintText: 'Email',
-              ),
-              const SizedBox(height: 20,),
-              const AuthTextHeadWidget(
-                title: "Password",
-              ),
-              AuthenticationTextFieldWidget(
-                controller: controller.passwordEditingController,
-                focusNode: controller.passwordFocusNode,
-                hintText: 'Password',
-              ),
-              const SizedBox(height: 20,),
-              GestureDetector(
-                child: const AuthSubmitButtonWidget(
-                  buttonName: "Login",
+                const SizedBox(height: 20,),
+                const AuthTextHeadWidget(
+                  title: "Email",
                 ),
-                onTap: (){
-                  controller.loginTest();
-                },
-              ),
-              const SizedBox(height: 20,),
-            ],
+                AuthenticationTextFieldWidget(
+                  controller: controller.emailEditingControllerL,
+                  focusNode: controller.emailFocusNodeL,
+                  hintText: 'Email',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Email is required';
+                    }
+                    if (!GetUtils.isEmail(value)) {
+                      return 'Email is invalid!!!';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20,),
+                const AuthTextHeadWidget(
+                  title: "Password",
+                ),
+                AuthenticationTextFieldWidget(
+                  controller: controller.passwordEditingControllerL,
+                  focusNode: controller.passwordFocusNodeL,
+                  hintText: 'Password',
+                  validator: (value){
+                    if (value == null || value.isEmpty) {
+                      return 'Password is required';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters long';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20,),
+                GestureDetector(
+                  child: const AuthSubmitButtonWidget(
+                    buttonName: "Login",
+                  ),
+                  onTap: (){
+                    if(controller.loginFormKey.currentState!.validate()){
+                      controller.loginTest(context);
+                    }
+                  },
+                ),
+                const SizedBox(height: 40,),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(text: "Don't Have An Account?  ", style: TextStyle(color: Colors.black,),),
+                      TextSpan(
+                        text: "Sign Up",
+                        style: const TextStyle(color: Colors.orange,),
+                        recognizer: TapGestureRecognizer()..onTap = (){
+                          Get.toNamed(AppRoutes.signup);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

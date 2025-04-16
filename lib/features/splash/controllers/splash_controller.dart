@@ -16,13 +16,13 @@ class SplashController extends GetxController {
   navigateToRoute(){
     if(preferences.getString("user_id") != null){
       if(preferences.getBool("biometric_enabled") != null || preferences.getBool("biometric_enabled") == true){
-        Get.toNamed(AppRoutes.biometric);
+        Get.offAllNamed(AppRoutes.biometric);
       } else {
         // Get.toNamed(AppRoutes.home);
-        Navigator.push(Get.context!, MaterialPageRoute(builder: (context) => const HomeScreen(),),);
+        Navigator.pushReplacement(Get.context!, MaterialPageRoute(builder: (context) => const HomeScreen(),),);
       }
     } else {
-      Get.toNamed(AppRoutes.login);
+      Get.offAllNamed(AppRoutes.login);
     }
   }
 

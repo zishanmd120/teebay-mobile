@@ -3,29 +3,80 @@ import 'package:get/get.dart';
 import 'package:teebay_mobile/features/home/presentation/screens/home_screen.dart';
 
 import '../../domain/usecases/login_interactor.dart';
+import '../../domain/usecases/signup_interactor.dart';
 
 class AuthController extends GetxController {
 
-  TextEditingController emailEditingController = TextEditingController();
-  TextEditingController passwordEditingController = TextEditingController();
+  LoginInteractor loginInteractor;
+  SignupInteractor signupInteractor;
+  AuthController(this.loginInteractor, this.signupInteractor,);
 
-  FocusNode nameFocusNode = FocusNode();
-  FocusNode passwordFocusNode = FocusNode();
+  /// login
+  GlobalKey<FormState>  loginFormKey = GlobalKey<FormState>();
+  TextEditingController emailEditingControllerL = TextEditingController();
+  TextEditingController passwordEditingControllerL = TextEditingController();
+  RxBool obscureLoginPassword = true.obs;
+
+  FocusNode emailFocusNodeL = FocusNode();
+  FocusNode passwordFocusNodeL = FocusNode();
 
   RxBool isLightTheme = true.obs;
 
-  LoginInteractor loginInteractor;
-  AuthController(this.loginInteractor);
-
-  loginTest() async {
-    // loginInteractor.execute(emailEditingController.text, passwordEditingController.text).then((value) {
-    loginInteractor.execute("zishan@example.com", "123456").then((value) {
-      if(value.isLeft()){
-        print("Login Failed $value");
-      }else{
-        print("Login Success $value");
+  loginTest(BuildContext context) async {
+    loginInteractor.execute(
+      emailEditingControllerL.text,
+      passwordEditingControllerL.text,
+    ).then((value) {
+      if (value.isLeft()) {
+        final error = value.fold((l) => l.message, (r) => null);
+        print("Login Failed: $error");
+        Get.snackbar("Failed", error ?? "Login failed", backgroundColor: Colors.red, colorText: Colors.white);
+      } else {
+        print("Login Success");
+        // Get.toNamed(AppRoutes.dashboard);
         Get.to(()=> const HomeScreen(),);
       }
+    });
+  }
+
+  /// signup
+  GlobalKey<FormState>  signupFormKey = GlobalKey<FormState>();
+  TextEditingController fNameEditingControllerS = TextEditingController();
+  TextEditingController lNameEditingControllerS = TextEditingController();
+  TextEditingController emailEditingControllerS = TextEditingController();
+  TextEditingController addressEditingControllerS = TextEditingController();
+  TextEditingController passwordEditingControllerS = TextEditingController();
+  TextEditingController confirmPasswordEditingControllerS = TextEditingController();
+  RxBool obscureLoginPasswordS = true.obs;
+
+  FocusNode fNameFocusNodeS = FocusNode();
+  FocusNode lNameFocusNodeS = FocusNode();
+  FocusNode emailFocusNodeS = FocusNode();
+  FocusNode addressFocusNodeS = FocusNode();
+  FocusNode passwordFocusNodeS = FocusNode();
+  FocusNode confirmPasswordFocusNodeS = FocusNode();
+
+  RxBool isValidEmail = false.obs;
+
+
+  signupTest(BuildContext context) async {
+    var result = await signupInteractor.execute(
+      fNameEditingControllerS.text,
+      lNameEditingControllerS.text,
+      emailEditingControllerS.text,
+      addressEditingControllerS.text,
+      passwordEditingControllerS.text,
+    );
+    return result.fold((l) {
+      print("Signup Failed: ${l.message}");
+
+      Get.snackbar("Failed", l.message, backgroundColor: Colors.red, colorText: Colors.white);
+
+    }, (r) {
+
+      Get.snackbar("Success", "Signup Success", backgroundColor: Colors.green, colorText: Colors.white);
+
+      Get.back();
     });
   }
 

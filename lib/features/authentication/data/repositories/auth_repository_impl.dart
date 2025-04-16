@@ -7,6 +7,7 @@ import '../../../../core/network/failure.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/network/auth_source.dart';
 import '../models/login_response.dart';
+import '../models/signup_response.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
 
@@ -15,38 +16,6 @@ class AuthRepositoryImpl implements AuthRepository {
   final SharedPreferences _sharedPreferences;
 
   AuthRepositoryImpl(this._authSource, this._sharedPreferences,);
-
-  // @override
-  // Future<NetworkResponse<LoginResponse>> login(String email, String password,) async {
-  //   NetworkResponse<dynamic> networkResponse = await _authSource.login(email, password,);
-  //   if (networkResponse.data != null) {
-  //     final response = LoginResponse.fromJson(networkResponse.data);
-  //     if (response.accessToken != null) {
-  //       // logger.d(response.accessToken);
-  //       loggerDev(response.accessToken);
-  //       // renew access token in session
-  //       // _sessionManager.token = response.accessToken;
-  //       // _sessionManager.refreshToken = response.refreshToken;
-  //       DateTime expireToken = DateTime.now().add(
-  //           Duration(seconds: response.expiresIn ?? 0));
-  //       DateTime expireRefreshToken = DateTime.now().add(
-  //           Duration(seconds: response.refreshExpiresIn ?? 0));
-  //       // _sessionManager.expiredIn = DateFormatter.toStringDateTime(expireToken);
-  //       // _sessionManager.refreshExpiredIn =
-  //       //     DateFormatter.toStringDateTime(expireRefreshToken);
-  //       // final currentUserResponse = await getCurrentUserFromDepends();
-  //       // _sessionManager.isLoggedIn =
-  //       //     currentUserResponse.status == HttpStatus.ok;
-  //       return NetworkResponse.withSuccess(
-  //           response, "Successfully login", currentUserResponse.status);
-  //     } else {
-  //       return NetworkResponse.withSuccess(
-  //           response, response.errorDescription, networkResponse.status);
-  //     }
-  //   }
-  //   return NetworkResponse.withFailure(
-  //       networkResponse.message, networkResponse.status);
-  // }
 
   @override
   Future<Either<Failure, LoginResponse>> login(String email, String password,) async {
@@ -74,9 +43,33 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  // @override
-  // Future<NetworkResponse> logOut() {
-  //   // TODO: implement logOut
-  //   throw UnimplementedError();
-  // }
+  @override
+  Future<Either<Failure, SignUpResponse>> signup(String fName, String lName, String email, String address, String password,) async {
+    final networkResponse = await _authSource.signup(fName, lName, email, address, password,
+      _sharedPreferences.getString("fcm_token") ?? "",
+    );
+    if (networkResponse.status == 408) {
+      print(networkResponse.message);
+      return Left(Failure(networkResponse.message ?? ""));
+    }
+    if (networkResponse.data != null) {
+      try {
+        final response = SignUpResponse.fromJson(jsonDecode(networkResponse.data));
+        if (response.id != null) {
+          return Right(response);
+        } else {
+          print(networkResponse.message);
+          return Left(Failure(networkResponse.message ?? ""));
+        }
+      } catch (e) {
+        print(networkResponse.message);
+        print("Failed to parse response: ${e.toString()}");
+        return Left(Failure("Failed to parse response: ${e.toString()}"));
+      }
+    } else {
+      print(networkResponse.message ?? "Unknown error");
+      return Left(Failure(networkResponse.message ?? "Unknown error"));
+    }
+  }
+
 }

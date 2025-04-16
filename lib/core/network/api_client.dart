@@ -31,8 +31,6 @@ class NetworkHttpClient {
       }
     } on TimeoutException {
       _logger.errorLog("TimeoutException");
-      // Something went wrong.
-      // Unable to connect the server.
       return NetworkResponse.withFailure("Unable to connect the server.", 408);
     } catch (error){
       _logger.errorLog(error.toString());
@@ -43,7 +41,7 @@ class NetworkHttpClient {
   Future<NetworkResponse<dynamic>> post({
     required String endpoint,
     String token = "",
-    required Map<String, dynamic> body,
+    Map<String, dynamic> ? body,
   }) async {
     try {
       print(endpoint);
@@ -63,9 +61,21 @@ class NetworkHttpClient {
       _logger.debugLog(response);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return NetworkResponse.withSuccess(utf8.decode(response.bodyBytes), "success", response.statusCode);
+        final decodedBody = jsonDecode(utf8.decode(response.bodyBytes));
+        return NetworkResponse.withSuccess(utf8.decode(response.bodyBytes), decodedBody['message'], response.statusCode);
       } else {
-        return NetworkResponse.withFailure("error", response.statusCode);
+        final decodedBody = jsonDecode(utf8.decode(response.bodyBytes));
+        final errors = decodedBody['error'];
+        String firstError = '';
+        if (errors is Map) {
+          for (var field in errors.entries) {
+            if (field.value is List && field.value.isNotEmpty) {
+              firstError = field.value.first;
+              break;
+            }
+          }
+        }
+        return NetworkResponse.withFailure(firstError.isNotEmpty ? firstError : errors, response.statusCode);
       }
     } on TimeoutException {
       _logger.errorLog("TimeoutException");

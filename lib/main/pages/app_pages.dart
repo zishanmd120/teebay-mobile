@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
-import 'package:teebay_mobile/features/product/presentation/bindings/add_product_bindings.dart';
-import 'package:teebay_mobile/features/product/presentation/screens/add_product_screen.dart';
+import 'package:teebay_mobile/features/authentication/presentation/screens/signup_screen.dart';
 import 'package:teebay_mobile/features/splash/presentation/splash_screen.dart';
 
+import '../../features/add product/presentation/bindings/add_product_bindings.dart';
+import '../../features/add product/presentation/screens/add_product_screen.dart';
 import '../../features/authentication/presentation/bindings/auth_bindings.dart';
 import '../../features/authentication/presentation/screens/login_screen.dart';
 import '../../features/splash/bindings/splash_bindings.dart';
@@ -28,6 +29,12 @@ class AppPages {
     GetPage(
       name: AppRoutes.login,
       page: () => const LoginScreen(),
+      binding: AuthBindings(),
+    ),
+
+    GetPage(
+      name: AppRoutes.signup,
+      page: () => const SignupScreen(),
       binding: AuthBindings(),
     ),
 

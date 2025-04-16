@@ -31,6 +31,7 @@ void getFCMToken() async {
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     String? token = await messaging.getToken();
     print("FCM Token: $token");
+    preferences.setString("fcm_token", token.toString());
   } else {
     print('User declined or has not accepted permission');
   }

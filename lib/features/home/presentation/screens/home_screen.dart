@@ -7,9 +7,10 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-import 'package:teebay_mobile/features/product/presentation/screens/add_product_screen.dart';
 import 'package:teebay_mobile/main.dart';
 import 'package:teebay_mobile/main/routes/app_routes.dart';
+
+import '../../../add product/presentation/screens/add_product_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -97,12 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         biometricAuthentication = value;
                       });
                     } else {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Enable Device Biometric Options.",),
-                        ),
-                      );
+                      Get.snackbar("Warning", "Enable Device Biometric Options.");
                     }
                   },
                 ),

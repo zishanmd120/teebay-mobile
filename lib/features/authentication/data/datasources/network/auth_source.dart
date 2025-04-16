@@ -18,4 +18,19 @@ class AuthSource {
     );
   }
 
+  Future<NetworkResponse<dynamic>> signup(String fName, String lName, String email, String address, String password, String token,) async {
+    return await _httpClient.post(
+      endpoint: Endpoints.signup,
+      body: {
+        "first_name": fName,
+        "last_name": lName,
+        "email": email,
+        "address": address,
+        "password": password,
+        "firebase_console_manager_token": token,
+      },
+    );
+  }
+
+
 }

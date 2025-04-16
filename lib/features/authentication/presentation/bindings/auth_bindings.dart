@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:teebay_mobile/features/authentication/domain/usecases/signup_interactor.dart';
 
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/logger.dart';
@@ -30,9 +31,13 @@ class AuthBindings extends Bindings{
 
     // UseCase
     Get.lazyPut(() => LoginInteractor(Get.find<AuthRepository>()));
+    Get.lazyPut(() => SignupInteractor(Get.find<AuthRepository>()));
 
     // Controller
-    Get.lazyPut(() => AuthController(Get.find<LoginInteractor>()));
+    Get.lazyPut(() => AuthController(
+      Get.find<LoginInteractor>(),
+      Get.find<SignupInteractor>(),
+    ));
 
   }
 

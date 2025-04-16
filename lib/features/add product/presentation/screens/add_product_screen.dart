@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:multi_dropdown/multi_dropdown.dart';
-import 'package:teebay_mobile/features/product/presentation/controllers/add_product_controller.dart';
+
+import '../controllers/add_product_controller.dart';
 
 class AddProductScreen extends GetView<AddProductController> {
   const AddProductScreen({super.key});

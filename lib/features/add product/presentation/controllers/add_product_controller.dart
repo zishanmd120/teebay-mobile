@@ -140,22 +140,19 @@ class AddProductController extends GetxController {
 
       if (response.statusCode == 201) {
         // Get.toNamed(AppRoutes.home);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Product created successfully!')),
-        );
+        Get.snackbar("Success", "Product created successfully!");
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const HomeScreen(),),
               (Route<dynamic> route) => false,
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${response.statusCode} - $respStr')),
-        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Error: ${response.statusCode} - $respStr')),
+        // );
+        Get.snackbar("Failed", respStr,);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      Get.snackbar("Failed", e.toString(),);
     }
   }
 
