@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:teebay_mobile/features/product/presentation/screens/add_product_screen.dart';
 import 'package:teebay_mobile/main.dart';
@@ -82,11 +83,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: const Text("Biometric Auth",),
                 trailing: Switch(
                   value: biometricAuthentication,
-                  onChanged: (value) {
+                  onChanged: (value) async {
+                    final LocalAuthentication auth = LocalAuthentication();
+                    bool isDeviceSupported = await auth.isDeviceSupported();
                     print(value);
-                    setState(() {
-                      biometricAuthentication = value;
-                    });
+                    if(isDeviceSupported){
+                      if(value == true){
+                        preferences.setBool("biometric_enabled", true);
+                      } else {
+                        preferences.setBool("biometric_enabled", false);
+                      }
+                      setState(() {
+                        biometricAuthentication = value;
+                      });
+                    } else {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Enable Device Biometric Options.",),
+                        ),
+                      );
+                    }
                   },
                 ),
                 onTap: (){

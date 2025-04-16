@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const LoginScreen(),
-      initialRoute: AppRoutes.login,
+      initialRoute: AppRoutes.splash,
       // unknownRoute: AppPages.unknownRoutePage,
       getPages: AppPages.pages,
     );

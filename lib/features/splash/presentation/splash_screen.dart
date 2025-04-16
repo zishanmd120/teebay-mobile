@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:teebay_mobile/features/splash/controllers/splash_controller.dart';
@@ -7,8 +8,11 @@ class SplashScreen extends GetView<SplashController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-
+    return const Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: CupertinoActivityIndicator(),
+      ),
     );
   }
 }
