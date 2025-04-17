@@ -79,6 +79,12 @@ class SignupScreen extends GetView<AuthController> {
                   controller: controller.addressEditingControllerS,
                   focusNode: controller.addressFocusNodeS,
                   hintText: 'address',
+                  validator: (value){
+                    if (value == null || value.isEmpty) {
+                      return 'Address is required';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 20,),
                 const AuthTextHeadWidget(
@@ -110,7 +116,7 @@ class SignupScreen extends GetView<AuthController> {
                     if (value == null || value.isEmpty) {
                       return 'Confirm Password is required';
                     }
-                    if (value == controller.passwordEditingControllerS.text) {
+                    if (value != controller.passwordEditingControllerS.text) {
                       return 'Password did not matched';
                     }
                     return null;
@@ -118,9 +124,9 @@ class SignupScreen extends GetView<AuthController> {
                 ),
                 const SizedBox(height: 20,),
                 GestureDetector(
-                  child: const AuthSubmitButtonWidget(
+                  child: Obx(() => controller.isSignupLoading.value ? const CircularProgressIndicator(color: Colors.white,) : const AuthSubmitButtonWidget(
                     buttonName: "SignUp",
-                  ),
+                  ),),
                   onTap: (){
                     if(controller.signupFormKey.currentState!.validate()){
                       controller.signupTest(context);
@@ -138,6 +144,7 @@ class SignupScreen extends GetView<AuthController> {
                     ),
                   ],
                 ),),
+                const SizedBox(height: 20,),
               ],
             ),
           ),

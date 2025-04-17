@@ -21,8 +21,10 @@ class AuthController extends GetxController {
   FocusNode passwordFocusNodeL = FocusNode();
 
   RxBool isLightTheme = true.obs;
+  RxBool isLoginLoading = false.obs;
 
   loginTest(BuildContext context) async {
+    isLoginLoading.value = true;
     loginInteractor.execute(
       emailEditingControllerL.text,
       passwordEditingControllerL.text,
@@ -31,10 +33,12 @@ class AuthController extends GetxController {
         final error = value.fold((l) => l.message, (r) => null);
         print("Login Failed: $error");
         Get.snackbar("Failed", error ?? "Login failed", backgroundColor: Colors.red, colorText: Colors.white);
+        isLoginLoading.value = false;
       } else {
         print("Login Success");
+        isLoginLoading.value = false;
         // Get.toNamed(AppRoutes.dashboard);
-        Get.to(()=> const HomeScreen(),);
+        Get.offAll(()=> const HomeScreen(),);
       }
     });
   }
@@ -58,8 +62,9 @@ class AuthController extends GetxController {
 
   RxBool isValidEmail = false.obs;
 
-
+  RxBool isSignupLoading = false.obs;
   signupTest(BuildContext context) async {
+    isSignupLoading.value = true;
     var result = await signupInteractor.execute(
       fNameEditingControllerS.text,
       lNameEditingControllerS.text,
@@ -71,9 +76,9 @@ class AuthController extends GetxController {
       print("Signup Failed: ${l.message}");
 
       Get.snackbar("Failed", l.message, backgroundColor: Colors.red, colorText: Colors.white);
-
+      isSignupLoading.value = false;
     }, (r) {
-
+      isSignupLoading.value = false;
       Get.snackbar("Success", "Signup Success", backgroundColor: Colors.green, colorText: Colors.white);
 
       Get.back();
