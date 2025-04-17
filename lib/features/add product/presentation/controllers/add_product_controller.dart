@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:teebay_mobile/features/home/presentation/screens/home_screen.dart';
-import 'package:teebay_mobile/main/routes/app_routes.dart';
 
 import '../../../../main.dart';
 import '../screens/add_product_screen.dart';
@@ -18,14 +16,11 @@ class AddProductController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     pages = [
-      PageOne(),
-      PageTwo(),
-      PageThree(),
-      PageFour(),
-      PageFive(
-        ppController: ppEditingController,
-        rpController: rpEditingController,
-      ),
+      const PageOne(),
+      const PageTwo(),
+      const PageThree(),
+      const PageFour(),
+      const PageFive(),
       const PageSummary(),
     ];
   }
@@ -37,6 +32,11 @@ class AddProductController extends GetxController {
   TextEditingController descriptionEditingController = TextEditingController();
   TextEditingController ppEditingController = TextEditingController();
   TextEditingController rpEditingController = TextEditingController();
+
+  FocusNode titleFocusNode = FocusNode();
+  FocusNode desFocusNode = FocusNode();
+  FocusNode ppFocusNode = FocusNode();
+  FocusNode rpFocusNode = FocusNode();
 
   final PageController pageController = PageController();
 
@@ -64,7 +64,6 @@ class AddProductController extends GetxController {
   }
 
   final ImagePicker picker = ImagePicker();
-  // File? imageFile;
   Rx<File?> imageFile = Rx<File?>(null);
   Future<void> pickImage(BuildContext context) async {
     try {

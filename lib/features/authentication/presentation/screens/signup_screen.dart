@@ -70,6 +70,15 @@ class SignupScreen extends GetView<AuthController> {
                   controller: controller.emailEditingControllerS,
                   focusNode: controller.emailFocusNodeS,
                   hintText: 'Email',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Email is required';
+                    }
+                    if (!GetUtils.isEmail(value)) {
+                      return 'Email is invalid!!!';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 20,),
                 const AuthTextHeadWidget(

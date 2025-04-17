@@ -80,6 +80,7 @@ class PageOne extends StatelessWidget {
         ),
         ProductTextFieldWidget(
           controller: controller.titleEditingController,
+          focusNode: controller.titleFocusNode,
         ),
       ],
     );
@@ -143,32 +144,6 @@ class _PageTwoState extends State<PageTwo> {
           padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
           child: Text("Select category", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold,),),
         ),
-        // DropdownMenu<String>(
-        //   width: MediaQuery.of(context).size.width * 0.925,
-        //   initialSelection: selectedCategory,
-        //   menuHeight: 150,
-        //   hintText: "Category",
-        //   onSelected: (String? value) {
-        //     setState(() {
-        //       selectedCategory = value ?? "";
-        //     });
-        //     FocusManager.instance.primaryFocus?.unfocus();
-        //   },
-        //   dropdownMenuEntries: categoriesList.map((category) {
-        //     return DropdownMenuEntry(
-        //       value: category.value ?? '',
-        //       label: category.label ?? '',
-        //     );
-        //   }).toList(),
-        //   inputDecorationTheme: InputDecorationTheme(
-        //     isDense: true,
-        //     contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        //     constraints: BoxConstraints.tight(const Size.fromHeight(45)),
-        //     border: OutlineInputBorder(
-        //       borderRadius: BorderRadius.circular(5),
-        //     ),
-        //   ),
-        // ),
         isLoding ? const CupertinoActivityIndicator() :
         MultiDropdown<String>(
           items: categoriesList.map((category) {
@@ -236,6 +211,7 @@ class PageThree extends StatelessWidget {
           controller: controller.descriptionEditingController,
           maxLines: 5,
           minLines: 5,
+          focusNode: controller.desFocusNode,
         ),
       ],
     );
@@ -313,12 +289,7 @@ class _PageFourState extends State<PageFour> {
 }
 
 class PageFive extends StatefulWidget {
-  final TextEditingController? ppController;
-  final TextEditingController? rpController;
-  const PageFive({super.key,
-    required this.ppController,
-    required this.rpController,
-  });
+  const PageFive({super.key,});
 
   @override
   State<PageFive> createState() => _PageFiveState();
@@ -340,14 +311,16 @@ class _PageFiveState extends State<PageFive> {
           child: Text("Purchase Price", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),),
         ),
         ProductTextFieldWidget(
-          controller: widget.ppController,
+          controller: controller.ppEditingController,
+          focusNode: controller.ppFocusNode,
         ),
         const Padding(
           padding: EdgeInsets.only(bottom: 10.0, top: 20.0),
           child: Text("Rent Price", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,),),
         ),
         ProductTextFieldWidget(
-          controller: widget.rpController,
+          controller: controller.rpEditingController,
+          focusNode: controller.rpFocusNode,
         ),
         const SizedBox(height: 30,),
         DropdownMenu<String>(
