@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:teebay_mobile/features/product/presentation/controllers/product_controller.dart';
@@ -62,22 +63,26 @@ class AllProductScreen extends GetView<ProductController> {
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0,),
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: controller.productsList.length,
-            itemBuilder: (context, index){
-              var item = controller.productsList[index];
-              return GestureDetector(
-                child: ProductCardWidget(productsModel: item,),
-                onTap: (){
-                  Get.toNamed(AppRoutes.productDetails);
-                  controller.fetchSingleProduct(item.id ?? 0,);
-                },
-              );
-            },
-          ),
+        child: Obx(
+            () => controller.isProductLoading.value
+                ? const CupertinoActivityIndicator()
+                : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0,),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: controller.productsList.length,
+                    itemBuilder: (context, index){
+                      var item = controller.productsList[index];
+                      return GestureDetector(
+                        child: ProductCardWidget(productsModel: item,),
+                        onTap: (){
+                          Get.toNamed(AppRoutes.productDetails);
+                          controller.fetchSingleProduct(item.id ?? 0,);
+                        },
+                      );
+                    },
+                  ),
+                ),
         ),
       ),
       floatingActionButton: GestureDetector(

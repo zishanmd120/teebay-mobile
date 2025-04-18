@@ -4,13 +4,15 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To run the project locally, make sure you have Flutter installed. Then follow these steps:
 
-A few resources to get you started if this is your first Flutter project:
+✅ Prerequisites
+Flutter SDK (version >=3.4.0 <4.0.0)
+Dart SDK (comes with Flutter)
+Android Studio / VS Code (optional, but recommended)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Install Dependencies
+Open your terminal in the root folder of the project and run:
+flutter pub get
+flutter run
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
