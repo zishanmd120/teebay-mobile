@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:teebay_mobile/features/home/presentation/screens/home_screen.dart';
 import 'package:teebay_mobile/main.dart';
 import 'package:teebay_mobile/main/routes/app_routes.dart';
 
@@ -18,8 +16,7 @@ class SplashController extends GetxController {
       if(preferences.getBool("biometric_enabled") != null || preferences.getBool("biometric_enabled") == true){
         Get.offAllNamed(AppRoutes.biometric);
       } else {
-        // Get.toNamed(AppRoutes.home);
-        Navigator.pushReplacement(Get.context!, MaterialPageRoute(builder: (context) => const HomeScreen(),),);
+        Get.toNamed(AppRoutes.allProducts);
       }
     } else {
       Get.offAllNamed(AppRoutes.login);

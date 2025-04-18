@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:teebay_mobile/features/home/presentation/screens/home_screen.dart';
+import 'package:teebay_mobile/features/transaction/presentation/screens/transaction_screen.dart';
 
+import '../../../../main/routes/app_routes.dart';
 import '../../domain/usecases/login_interactor.dart';
 import '../../domain/usecases/signup_interactor.dart';
 
@@ -37,8 +38,7 @@ class AuthController extends GetxController {
       } else {
         print("Login Success");
         isLoginLoading.value = false;
-        // Get.toNamed(AppRoutes.dashboard);
-        Get.offAll(()=> const HomeScreen(),);
+        Get.toNamed(AppRoutes.allProducts);
       }
     });
   }

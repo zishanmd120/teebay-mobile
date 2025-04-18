@@ -4,11 +4,11 @@ abstract class AppRoutes {
   static const login = '/login';
   static const signup = '/signup';
   static const biometric = '/biometric';
-  static const settings = '/home';
-  static const dashboard = '/dashboard';
+  static const allProducts = '/allProducts';
+  static const productDetails = '/productDetails';
   static const addProduct = '/addProduct';
-  // static const dashboardWithParameter = '/dashboard/:id';
-  static const unknownRoutePage = '/notfound';
-  static const forgotPassword = '/forgot_password';
+  static const myStore = '/myStore';
+  static const myProductEdit = '/myProductEdit';
+  static const myTransaction = '/myTransaction';
 
 }

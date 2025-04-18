@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:multi_dropdown/multi_dropdown.dart';
+import 'package:teebay_mobile/features/product/data/models/categories_model.dart';
 
-import '../controllers/add_product_controller.dart';
+import '../controllers/product_controller.dart';
 
-class AddProductScreen extends GetView<AddProductController> {
+class AddProductScreen extends GetView<ProductController> {
   const AddProductScreen({super.key});
 
   @override
@@ -50,7 +51,7 @@ class AddProductScreen extends GetView<AddProductController> {
 
                   ElevatedButton(
                     onPressed: (){
-                      controller.isLastPage.value ? controller.submitButton(context) : controller.nextPage();
+                      controller.isLastPage.value ? controller.addProduct(context) : controller.nextPage();
                     },
                     child: Text(controller.isLastPage.value ? 'Submit' : 'Next'),
                   ),
@@ -69,7 +70,7 @@ class PageOne extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<AddProductController>();
+    final controller = Get.find<ProductController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +107,7 @@ class _PageTwoState extends State<PageTwo> {
   }
 
   final MultiSelectController<String> _controller = MultiSelectController<String>();
-  List<CategoriesModel> categoriesList = [];
+  List<CategoriesResponse> categoriesList = [];
   bool isLoding = false;
   Future<void> fetchCategories() async {
     setState(() {
@@ -118,7 +119,7 @@ class _PageTwoState extends State<PageTwo> {
       final List<dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes,),);
 
       categoriesList = jsonData
-          .map((item) => CategoriesModel.fromJson(item))
+          .map((item) => CategoriesResponse.fromJson(item))
           .toList();
       print(jsonData);
       setState(() {
@@ -135,7 +136,7 @@ class _PageTwoState extends State<PageTwo> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<AddProductController>();
+    final controller = Get.find<ProductController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -198,7 +199,7 @@ class PageThree extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<AddProductController>();
+    final controller = Get.find<ProductController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -229,7 +230,7 @@ class _PageFourState extends State<PageFour> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<AddProductController>();
+    final controller = Get.find<ProductController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -299,7 +300,7 @@ class _PageFiveState extends State<PageFive> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<AddProductController>();
+    final controller = Get.find<ProductController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -356,7 +357,7 @@ class PageSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<AddProductController>();
+    final controller = Get.find<ProductController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -394,24 +395,7 @@ class PageSummary extends StatelessWidget {
   }
 }
 
-class CategoriesModel {
-  String? value;
-  String? label;
 
-  CategoriesModel({this.value, this.label});
-
-  CategoriesModel.fromJson(Map<String, dynamic> json) {
-    value = json['value'];
-    label = json['label'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['value'] = value;
-    data['label'] = label;
-    return data;
-  }
-}
 
 class ProductTextFieldWidget extends StatefulWidget {
   final String? hintText;
