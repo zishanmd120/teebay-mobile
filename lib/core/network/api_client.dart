@@ -19,7 +19,7 @@ class NetworkHttpClient {
     try {
       final response = await http.get(
         Uri.parse(endpoint),
-      ).timeout(const Duration(seconds: 5,),);
+      ).timeout(const Duration(seconds: 10,),);
 
       _logger.logUrl(endpoint);
       _logger.debugLog(response);
@@ -53,7 +53,7 @@ class NetworkHttpClient {
           'Content-Type': 'application/json',
           if (token.isNotEmpty) 'Authorization': 'Bearer $token',
         },
-      ).timeout(const Duration(seconds: 5,),);
+      ).timeout(const Duration(seconds: 10,),);
 
       print(response.statusCode);
       print(response.body);
@@ -93,7 +93,7 @@ class NetworkHttpClient {
     try {
       final response = await http.delete(
         Uri.parse(endpoint),
-      ).timeout(const Duration(seconds: 5,),);
+      ).timeout(const Duration(seconds: 10,),);
 
       _logger.logUrl(endpoint);
       _logger.debugLog(response);

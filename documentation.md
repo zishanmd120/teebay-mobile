@@ -35,6 +35,7 @@ build() API call inside item widgets.
 4. My Products List Page
 ✔️ Approach:This page shows products listed by the current user (both for sale and rent).
 Fetches product list on init, and uses Obx to update UI dynamically.
+User can update their data. 
 
 5. Product Buy / Rent Page
 ✔️ Approach: Product details shown after user taps a card.
