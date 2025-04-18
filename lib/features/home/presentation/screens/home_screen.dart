@@ -10,6 +10,7 @@ import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:teebay_mobile/main.dart';
 import 'package:teebay_mobile/main/routes/app_routes.dart';
 
+import '../../../../core/utils/format_date.dart';
 import '../../../add product/presentation/screens/add_product_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -119,52 +120,58 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index){
               var item = productsList[index];
               return GestureDetector(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0,),
-                  margin: const EdgeInsets.only(bottom: 10.0,),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.05),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(item.title ?? "", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: (item.categories ?? []).asMap().entries.map((entry) {
-                          final index = entry.key;
-                          final category = entry.value;
-                          final capitalized = category[0].toUpperCase() + category.substring(1);
-                          final isLast = index == (item.categories!.length - 1);
-                          return Text("$capitalized${isLast ? '.' : ', '}");
-                        }).toList(),
-                      ),
-                      Row(
-                        children: [
-                          Text(item.purchasePrice ?? ""),
-                          Text(item.rentPrice ?? ""),
-                          Text(item.rentOption ?? ""),
-                        ],
-                      ),
-                      Text(item.description ?? "",
-                        maxLines: selectedMaxLines ? null : 3,
-                        overflow: selectedMaxLines ? null : TextOverflow.ellipsis,
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: (){
-                            selectedMaxLines = !selectedMaxLines;
-                            setState(() {});
-                          },
-                          child: const Text("see more", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.orange,),),
-                        ),
-                      ),
-                      Text(item.datePosted ?? ""),
-                    ],
-                  ),
-                ),
+                // child: Container(
+                //   padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0,),
+                //   margin: const EdgeInsets.only(bottom: 10.0,),
+                //   decoration: BoxDecoration(
+                //     color: Colors.black.withOpacity(0.05),
+                //     borderRadius: BorderRadius.circular(5),
+                //   ),
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       Text(item.title ?? "", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),),
+                //       Row(
+                //         children: [
+                //           const Text("Categories: "),
+                //           Row(
+                //             crossAxisAlignment: CrossAxisAlignment.start,
+                //             children: (item.categories ?? []).asMap().entries.map((entry) {
+                //               final index = entry.key;
+                //               final category = entry.value;
+                //               final capitalized = category[0].toUpperCase() + category.substring(1);
+                //               final isLast = index == (item.categories!.length - 1);
+                //               return Text("$capitalized${isLast ? '.' : ', '}");
+                //             }).toList(),
+                //           ),
+                //         ],
+                //       ),
+                //       Row(
+                //         children: [
+                //           Text("Price: Tk.${item.purchasePrice ?? " "} | "),
+                //           Text("Rent: Tk.${item.rentPrice ?? " "} / "),
+                //           Text(item.rentOption ?? ""),
+                //         ],
+                //       ),
+                //       Text(item.description ?? "",
+                //         maxLines: selectedMaxLines ? null : 3,
+                //         overflow: selectedMaxLines ? null : TextOverflow.ellipsis,
+                //       ),
+                //       Align(
+                //         alignment: Alignment.centerRight,
+                //         child: GestureDetector(
+                //           onTap: (){
+                //             selectedMaxLines = !selectedMaxLines;
+                //             setState(() {});
+                //           },
+                //           child: const Text("see more", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.orange,),),
+                //         ),
+                //       ),
+                //       Text("Date Posted: ${FormatDate().formatDateWithSuffix(DateTime.parse(item.datePosted ?? ""))}"),
+                //     ],
+                //   ),
+                // ),
+                child: ProductCardWidget(productsModel: item,),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsPage(productId: item.id ?? 0),),);
                 },
@@ -247,6 +254,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     if (response.statusCode == 201) {
       var jsonData = json.decode(utf8.decode(response.bodyBytes,),);
       print(jsonData);
+      Navigator.pop(context);
+      Navigator.pop(context);
       setState(() {
         // data = jsonData['title'];
       });
@@ -321,28 +330,38 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(item?.title ?? "", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),),
+              const SizedBox(height: 20,),
               Image.network(item?.productImage ?? ""),
               // Image.network((item?.productImage ?? "").replaceAll("http://10.0.2.2:8000", "http://127.0.0.1:8000")),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: (item?.categories ?? []).asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final category = entry.value;
-                  final capitalized = category[0].toUpperCase() + category.substring(1);
-                  final isLast = index == ((item?.categories ?? []).length - 1);
-                  return Text("$capitalized${isLast ? '.' : ', '}");
-                }).toList(),
-              ),
+              const SizedBox(height: 20,),
               Row(
                 children: [
-                  Text(item?.purchasePrice ?? ""),
-                  Text(item?.rentPrice ?? ""),
+                  const Text("Categories: "),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: (item?.categories ?? []).asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final category = entry.value;
+                      final capitalized = category[0].toUpperCase() + category.substring(1);
+                      final isLast = index == ((item?.categories ?? []).length - 1);
+                      return Text("$capitalized${isLast ? '.' : ', '}");
+                    }).toList(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20,),
+              Row(
+                children: [
+                  Text("Price: Tk.${item?.purchasePrice ?? " "} | "),
+                  Text("Rent: Tk.${item?.rentPrice ?? " "} / "),
                   Text(item?.rentOption ?? ""),
                 ],
               ),
+              const SizedBox(height: 20,),
               Text(item?.description ?? "",),
-              Text(item?.datePosted ?? ""),
-              const SizedBox(height: 30,),
+              const SizedBox(height: 20,),
+              Text("Date Posted: ${FormatDate().formatDateWithSuffix(DateTime.parse(item?.datePosted ?? ""))}"),
+              const SizedBox(height: 50,),
               if(item?.seller.toString() != preferences.getString("user_id").toString())
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -855,52 +874,53 @@ class _ProductLoadDataCardState extends State<ProductLoadDataCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0,),
-        margin: const EdgeInsets.only(bottom: 10.0,),
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(item?.title ?? "", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: (item?.categories ?? []).asMap().entries.map((entry) {
-                final index = entry.key;
-                final category = entry.value;
-                final capitalized = category[0].toUpperCase() + category.substring(1);
-                final isLast = index == ((item?.categories ?? []).length - 1);
-                return Text("$capitalized${isLast ? '.' : ', '}");
-              }).toList(),
-            ),
-            Row(
-              children: [
-                Text(item?.purchasePrice ?? ""),
-                Text(item?.rentPrice ?? ""),
-                Text(item?.rentOption ?? ""),
-              ],
-            ),
-            Text(item?.description ?? "",
-              maxLines: selectedMaxLines ? null : 3,
-              overflow: selectedMaxLines ? null : TextOverflow.ellipsis,
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: GestureDetector(
-                onTap: (){
-                  selectedMaxLines = !selectedMaxLines;
-                  setState(() {});
-                },
-                child: const Text("see more", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.orange,),),
-              ),
-            ),
-            Text(item?.datePosted ?? ""),
-          ],
-        ),
-      ),
+      // child: Container(
+      //   padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0,),
+      //   margin: const EdgeInsets.only(bottom: 10.0,),
+      //   decoration: BoxDecoration(
+      //     color: Colors.black.withOpacity(0.05),
+      //     borderRadius: BorderRadius.circular(5),
+      //   ),
+      //   child: Column(
+      //     crossAxisAlignment: CrossAxisAlignment.start,
+      //     children: [
+      //       Text(item?.title ?? "", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),),
+      //       Row(
+      //         crossAxisAlignment: CrossAxisAlignment.start,
+      //         children: (item?.categories ?? []).asMap().entries.map((entry) {
+      //           final index = entry.key;
+      //           final category = entry.value;
+      //           final capitalized = category[0].toUpperCase() + category.substring(1);
+      //           final isLast = index == ((item?.categories ?? []).length - 1);
+      //           return Text("$capitalized${isLast ? '.' : ', '}");
+      //         }).toList(),
+      //       ),
+      //       Row(
+      //         children: [
+      //           Text(item?.purchasePrice ?? ""),
+      //           Text(item?.rentPrice ?? ""),
+      //           Text(item?.rentOption ?? ""),
+      //         ],
+      //       ),
+      //       Text(item?.description ?? "",
+      //         maxLines: selectedMaxLines ? null : 3,
+      //         overflow: selectedMaxLines ? null : TextOverflow.ellipsis,
+      //       ),
+      //       Align(
+      //         alignment: Alignment.centerRight,
+      //         child: GestureDetector(
+      //           onTap: (){
+      //             selectedMaxLines = !selectedMaxLines;
+      //             setState(() {});
+      //           },
+      //           child: const Text("see more", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.orange,),),
+      //         ),
+      //       ),
+      //       Text(item?.datePosted ?? ""),
+      //     ],
+      //   ),
+      // ),
+      child: ProductCardWidget(productsModel: item ?? ProductsModel(),),
       onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsPage(productId: item?.id ?? -1),),);
       },
@@ -971,68 +991,74 @@ class _MyStoreScreenState extends State<MyStoreScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 15.0,),
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: productsList.length,
+            itemCount: myProductsList.length,
             itemBuilder: (context, index){
-              var item = productsList[index];
+              var item = myProductsList[index];
               return GestureDetector(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0,),
-                  margin: const EdgeInsets.only(bottom: 10.0,),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.05),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(item.title ?? "", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),),
-                          if(preferences.getString("user_id").toString() == item.seller.toString())
-                            InkWell(
-                              child: const Icon(Icons.delete, size: 18, color: Colors.red,),
-                              onTap: (){
-                                deleteProduct(item.id ?? -1);
-                              },
-                            ),
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: (item.categories ?? []).asMap().entries.map((entry) {
-                          final index = entry.key;
-                          final category = entry.value;
-                          final capitalized = category[0].toUpperCase() + category.substring(1);
-                          final isLast = index == (item.categories!.length - 1);
-                          return Text("$capitalized${isLast ? '.' : ', '}");
-                        }).toList(),
-                      ),
-                      Row(
-                        children: [
-                          Text(item.purchasePrice ?? ""),
-                          Text(item.rentPrice ?? ""),
-                          Text(item.rentOption ?? ""),
-                        ],
-                      ),
-                      Text(item.description ?? "",
-                        maxLines: selectedMaxLines ? null : 3,
-                        overflow: selectedMaxLines ? null : TextOverflow.ellipsis,
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: (){
-                            selectedMaxLines = !selectedMaxLines;
-                            setState(() {});
-                          },
-                          child: const Text("see more", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.orange,),),
-                        ),
-                      ),
-                      Text(item.datePosted ?? ""),
-                    ],
-                  ),
-                ),
+                // child: Container(
+                //   padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0,),
+                //   margin: const EdgeInsets.only(bottom: 10.0,),
+                //   decoration: BoxDecoration(
+                //     color: Colors.black.withOpacity(0.05),
+                //     borderRadius: BorderRadius.circular(5),
+                //   ),
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Text(item.title ?? "", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),),
+                //           if(preferences.getString("user_id").toString() == item.seller.toString())
+                //             InkWell(
+                //               child: const Icon(Icons.delete, size: 18, color: Colors.red,),
+                //               onTap: (){
+                //                 deleteProduct(item.id ?? -1);
+                //               },
+                //             ),
+                //         ],
+                //       ),
+                //       Row(
+                //         children: [
+                //           const Text("Categories: "),
+                //           Row(
+                //             crossAxisAlignment: CrossAxisAlignment.start,
+                //             children: (item.categories ?? []).asMap().entries.map((entry) {
+                //               final index = entry.key;
+                //               final category = entry.value;
+                //               final capitalized = category[0].toUpperCase() + category.substring(1);
+                //               final isLast = index == (item.categories!.length - 1);
+                //               return Text("$capitalized${isLast ? '.' : ', '}");
+                //             }).toList(),
+                //           ),
+                //         ],
+                //       ),
+                //       Row(
+                //         children: [
+                //           Text("Price: Tk.${item.purchasePrice ?? " "} | "),
+                //           Text("Rent: Tk.${item.rentPrice ?? " "} / "),
+                //           Text(item.rentOption ?? ""),
+                //         ],
+                //       ),
+                //       Text(item.description ?? "",
+                //         maxLines: selectedMaxLines ? null : 3,
+                //         overflow: selectedMaxLines ? null : TextOverflow.ellipsis,
+                //       ),
+                //       Align(
+                //         alignment: Alignment.centerRight,
+                //         child: GestureDetector(
+                //           onTap: (){
+                //             selectedMaxLines = !selectedMaxLines;
+                //             setState(() {});
+                //           },
+                //           child: const Text("see more", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.orange,),),
+                //         ),
+                //       ),
+                //       Text("Date Posted: ${FormatDate().formatDateWithSuffix(DateTime.parse(item.datePosted ?? ""))}"),
+                //     ],
+                //   ),
+                // ),
+                child: ProductCardWidget(productsModel: item,),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => MyProductEditScreen(productsModel: item ?? ProductsModel(),),),);
                 },
@@ -1434,6 +1460,74 @@ class RentalListModel {
     data['total_price'] = totalPrice;
     data['rent_date'] = rentDate;
     return data;
+  }
+}
+
+class ProductCardWidget extends StatefulWidget {
+  final ProductsModel productsModel;
+  const ProductCardWidget({super.key, required this.productsModel,});
+
+  @override
+  State<ProductCardWidget> createState() => _ProductCardWidgetState();
+}
+
+class _ProductCardWidgetState extends State<ProductCardWidget> {
+
+  bool selectedMaxLines = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0,),
+      margin: const EdgeInsets.only(bottom: 10.0,),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(widget.productsModel.title ?? "", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),),
+          Row(
+            children: [
+              const Text("Categories: "),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: (widget.productsModel.categories ?? []).asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final category = entry.value;
+                  final capitalized = category[0].toUpperCase() + category.substring(1);
+                  final isLast = index == (widget.productsModel.categories!.length - 1);
+                  return Text("$capitalized${isLast ? '.' : ', '}");
+                }).toList(),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Text("Price: Tk.${widget.productsModel.purchasePrice ?? " "} | "),
+              Text("Rent: Tk.${widget.productsModel.rentPrice ?? " "} / "),
+              Text(widget.productsModel.rentOption ?? ""),
+            ],
+          ),
+          Text(widget.productsModel.description ?? "",
+            maxLines: selectedMaxLines ? null : 3,
+            overflow: selectedMaxLines ? null : TextOverflow.ellipsis,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              onTap: (){
+                selectedMaxLines = !selectedMaxLines;
+                setState(() {});
+              },
+              child: const Text("see more", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.orange,),),
+            ),
+          ),
+          Text("Date Posted: ${FormatDate().formatDateWithSuffix(DateTime.parse(widget.productsModel.datePosted ?? ""))}"),
+        ],
+      ),
+    );
   }
 }
 
