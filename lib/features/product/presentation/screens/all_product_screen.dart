@@ -39,7 +39,7 @@ class AllProductScreen extends GetView<ProductController> {
                   // Navigator.push(context, MaterialPageRoute(builder: (context) => const MyStoreScreen(),),);
                 },
               ),
-              ListTile(
+              Obx(() => ListTile(
                 title: const Text("Biometric Auth",),
                 trailing: Switch(
                   value: controller.biometricAuthentication.value,
@@ -57,7 +57,7 @@ class AllProductScreen extends GetView<ProductController> {
                     }
                   },
                 ),
-              ),
+              ),),
             ],
           ),
         ),

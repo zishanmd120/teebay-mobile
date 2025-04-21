@@ -60,7 +60,7 @@ class NetworkHttpClient {
       _logger.logUrl(endpoint);
       _logger.debugLog(response);
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final decodedBody = jsonDecode(utf8.decode(response.bodyBytes));
         return NetworkResponse.withSuccess(utf8.decode(response.bodyBytes), decodedBody['message'], response.statusCode);
       } else {

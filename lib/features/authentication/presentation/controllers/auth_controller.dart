@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:teebay_mobile/features/transaction/presentation/screens/transaction_screen.dart';
+import 'package:local_auth/local_auth.dart';
 
+import '../../../../core/utils/toster.dart';
 import '../../../../main/routes/app_routes.dart';
 import '../../domain/usecases/login_interactor.dart';
 import '../../domain/usecases/signup_interactor.dart';
@@ -13,7 +14,7 @@ class AuthController extends GetxController {
   AuthController(this.loginInteractor, this.signupInteractor,);
 
   /// login
-  GlobalKey<FormState>  loginFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> loginFormKey = GlobalKey();
   TextEditingController emailEditingControllerL = TextEditingController();
   TextEditingController passwordEditingControllerL = TextEditingController();
   RxBool obscureLoginPassword = true.obs;
@@ -24,27 +25,25 @@ class AuthController extends GetxController {
   RxBool isLightTheme = true.obs;
   RxBool isLoginLoading = false.obs;
 
-  loginTest(BuildContext context) async {
+  postLogin() async {
     isLoginLoading.value = true;
-    loginInteractor.execute(
+    var result = await loginInteractor.execute(
       emailEditingControllerL.text,
       passwordEditingControllerL.text,
-    ).then((value) {
-      if (value.isLeft()) {
-        final error = value.fold((l) => l.message, (r) => null);
-        print("Login Failed: $error");
-        Get.snackbar("Failed", error ?? "Login failed", backgroundColor: Colors.red, colorText: Colors.white);
-        isLoginLoading.value = false;
-      } else {
-        print("Login Success");
-        isLoginLoading.value = false;
-        Get.toNamed(AppRoutes.allProducts);
-      }
+    );
+    return result.fold((l) {
+      print("Login Failed: ${l.message}");
+      showErrorSnackBar("Failed", l.message,);
+      isLoginLoading.value = false;
+    }, (r) {
+    print("Login Success");
+      isLoginLoading.value = false;
+      Get.toNamed(AppRoutes.allProducts);
     });
   }
 
   /// signup
-  GlobalKey<FormState>  signupFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> signupFormKey = GlobalKey();
   TextEditingController fNameEditingControllerS = TextEditingController();
   TextEditingController lNameEditingControllerS = TextEditingController();
   TextEditingController emailEditingControllerS = TextEditingController();
@@ -63,7 +62,7 @@ class AuthController extends GetxController {
   RxBool isValidEmail = false.obs;
 
   RxBool isSignupLoading = false.obs;
-  signupTest(BuildContext context) async {
+  postSignup() async {
     isSignupLoading.value = true;
     var result = await signupInteractor.execute(
       fNameEditingControllerS.text,
@@ -74,15 +73,33 @@ class AuthController extends GetxController {
     );
     return result.fold((l) {
       print("Signup Failed: ${l.message}");
-
-      Get.snackbar("Failed", l.message, backgroundColor: Colors.red, colorText: Colors.white);
+      showErrorSnackBar("Failed", l.message,);
       isSignupLoading.value = false;
     }, (r) {
       isSignupLoading.value = false;
-      Get.snackbar("Success", "Signup Success", backgroundColor: Colors.green, colorText: Colors.white);
-
       Get.back();
+      showSuccessSnackBar("Success", "Signup Success",);
     });
   }
 
+  /// biometric auth
+  final LocalAuthentication auth = LocalAuthentication();
+  RxBool isAuthSuccess = false.obs;
+  Future<void> biometricAuthenticate() async {
+    try {
+      isAuthSuccess.value = await auth.authenticate(
+        localizedReason: "Biometric Authentication",
+        options: const AuthenticationOptions(
+          biometricOnly: true,
+          useErrorDialogs: true,
+          stickyAuth: true,
+        ),
+      );
+      if(isAuthSuccess.value){
+        Get.offAllNamed(AppRoutes.allProducts);
+      }
+    } catch (e) {
+      print("Authentication error: $e");
+    }
+  }
 }

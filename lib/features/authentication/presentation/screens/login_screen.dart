@@ -85,7 +85,7 @@ class LoginScreen extends GetView<AuthController> {
                   ),),
                   onTap: (){
                     if(controller.loginFormKey.currentState!.validate()){
-                      controller.loginTest(context);
+                      controller.postLogin();
                     }
                   },
                 ),
@@ -98,7 +98,7 @@ class LoginScreen extends GetView<AuthController> {
                         text: "Sign Up",
                         style: const TextStyle(color: Colors.orange,),
                         recognizer: TapGestureRecognizer()..onTap = (){
-                          Get.toNamed(AppRoutes.signup);
+                          Get.offAllNamed(AppRoutes.signup);
                         },
                       ),
                     ],

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:teebay_mobile/features/splash/controllers/splash_controller.dart';
+import 'package:teebay_mobile/features/authentication/presentation/controllers/auth_controller.dart';
 
-class BiometricAuthScreen extends GetView<SplashController> {
+class BiometricAuthScreen extends GetView<AuthController> {
   const BiometricAuthScreen({super.key});
 
   @override
@@ -52,10 +52,10 @@ class BiometricAuthScreen extends GetView<SplashController> {
                       )),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Text("Tap to unlock the login screen.", style: context.textTheme.bodyLarge, textAlign: TextAlign.center,),
+              Text("Tap to proceed with the biometric auth.", style: context.textTheme.bodyLarge, textAlign: TextAlign.center,),
             ],
           ),
         ),

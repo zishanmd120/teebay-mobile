@@ -148,7 +148,7 @@ class SignupScreen extends GetView<AuthController> {
                   ),),
                   onTap: (){
                     if(controller.signupFormKey.currentState!.validate()){
-                      controller.signupTest(context);
+                      controller.postSignup();
                     }
                   },
                 ),
@@ -158,7 +158,7 @@ class SignupScreen extends GetView<AuthController> {
                     const TextSpan(text: "Already have an account?  ", style: TextStyle(color: Colors.black,),),
                     TextSpan(text: "Sign In", style: const TextStyle(color: Colors.orange,),
                       recognizer: TapGestureRecognizer()..onTap = (){
-                        Get.toNamed(AppRoutes.login);
+                        Get.offAllNamed(AppRoutes.login);
                       },
                     ),
                   ],

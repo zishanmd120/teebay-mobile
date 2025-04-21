@@ -11,7 +11,7 @@ import '../../features/product/presentation/screens/my_product_edit_screen.dart'
 import '../../features/product/presentation/screens/my_store_screen.dart';
 import '../../features/product/presentation/screens/product_details_screen.dart';
 import '../../features/splash/bindings/splash_bindings.dart';
-import '../../features/splash/presentation/biometric_auth_screen.dart';
+import '../../features/authentication/presentation/screens/biometric_auth_screen.dart';
 import '../../features/transaction/presentation/bindings/transaction_bindings.dart';
 import '../../features/transaction/presentation/screens/transaction_screen.dart';
 import '../routes/app_routes.dart';
@@ -29,7 +29,7 @@ class AppPages {
     GetPage(
       name: AppRoutes.biometric,
       page: () => const BiometricAuthScreen(),
-      binding: SplashBindings(),
+      binding: AuthBindings(),
     ),
 
     GetPage(
