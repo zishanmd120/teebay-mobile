@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:teebay_mobile/features/product/presentation/controllers/product_controller.dart';
 
-import 'add_product_screen.dart';
+import '../widgets/product_text_field_widget.dart';
 
 class MyProductEditScreen extends GetView<ProductController> {
   const MyProductEditScreen({super.key,});

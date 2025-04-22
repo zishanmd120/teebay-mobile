@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:teebay_mobile/core/utils/endpoints.dart';
 import 'package:teebay_mobile/features/transaction/domain/usecase/buy_product_interactor.dart';
 import 'package:teebay_mobile/features/transaction/domain/usecase/rent_product_interactor.dart';
 import 'package:teebay_mobile/features/product/data/models/categories_model.dart';
@@ -48,14 +49,14 @@ class ProductController extends GetxController {
     super.onInit();
     fetchProduct();
     fetchCategories();
-    pages = [
-      const PageOne(),
-      const PageTwo(),
-      const PageThree(),
-      const PageFour(),
-      const PageFive(),
-      const PageSummary(),
-    ];
+    // pages = [
+    //   const PageOne(),
+    //   const PageTwo(),
+    //   const PageThree(),
+    //   const PageFour(),
+    //   const PageFive(),
+    //   const PageSummary(),
+    // ];
   }
 
   List<String> selectedCategoryList = [];
@@ -73,7 +74,7 @@ class ProductController extends GetxController {
 
   final PageController pageController = PageController();
 
-  late final List<Widget> pages;
+  // late final List<Widget> pages;
   RxInt currentPage = 0.obs;
   RxBool isLastPage = false.obs;
 
@@ -130,59 +131,6 @@ class ProductController extends GetxController {
 
   String selectedOption = '';
   List<String> optionTypes = ['Per Hour', 'Per Day',];
-
-  void submitButton(BuildContext context) async {
-
-    try {
-      var headers = {
-        'accept': 'application/json',
-      };
-
-      var request = http.MultipartRequest(
-          'POST',
-          Uri.parse('http://10.0.2.2:8000/api/products/')
-      );
-
-      request.fields.addAll({
-        "seller": preferences.getString("user_id") ?? "",
-        "title": titleEditingController.text,
-        "description": descriptionEditingController.text,
-        "purchase_price": ppEditingController.text,
-        "rent_price": rpEditingController.text,
-        "rent_option": selectedOption.toLowerCase().contains("hour") ? "hour" : "day",
-      });
-
-      for (var category in selectedCategoryList) {
-        request.files.add(
-          http.MultipartFile.fromString('categories', category),
-        );
-      }
-
-      request.files.add(await http.MultipartFile.fromPath(
-        'product_image',
-        imageFile.value?.path ?? "",
-      ));
-
-      request.headers.addAll(headers);
-
-      var response = await request.send();
-      final respStr = await response.stream.bytesToString();
-      print(response.statusCode);
-      print(respStr);
-
-      if (response.statusCode == 201) {
-        Get.toNamed(AppRoutes.allProducts);
-        Get.snackbar("Success", "Product created successfully!");
-      } else {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text('Error: ${response.statusCode} - $respStr')),
-        // );
-        Get.snackbar("Failed", respStr,);
-      }
-    } catch (e) {
-      Get.snackbar("Failed", e.toString(),);
-    }
-  }
 
   List<ProductsResponse> productsList = [];
   List<ProductsResponse> myProductsList = [];
@@ -401,6 +349,17 @@ class ProductController extends GetxController {
         isProductAdding.value = false;
         Get.snackbar("Success", "Product Added Successfully.", backgroundColor: Colors.green, colorText: Colors.white,);
         Get.toNamed(AppRoutes.allProducts);
+        fetchProduct();
+        titleEditingController.clear();
+        selectedCategoryList.clear();
+        descriptionEditingController.clear();
+        ppEditingController.clear();
+        rpEditingController.clear();
+        selectedOption = "" ;
+        imageFile.value = null;
+        pageController.jumpTo(0);
+        currentPage.value = 0;
+        onPageChanged(currentPage.value);
       }
     });
   }

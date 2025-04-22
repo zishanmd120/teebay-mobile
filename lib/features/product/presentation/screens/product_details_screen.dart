@@ -28,7 +28,7 @@ class ProductDetailsPage extends GetView<ProductController> {
                   Text(controller.item?.title ?? "", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),),
                   const SizedBox(height: 20,),
                   Image.network(controller.item?.productImage ?? ""),
-                  // Image.network((controller.item?.productImage ?? "").replaceAll("http://10.0.2.2:8000", "http://127.0.0.1:8000")),
+                  // Image.network("http://192.168.0.104:8001/media/product_images/NTisn7FckN4_1_82WH8Bc.jpg"),
                   const SizedBox(height: 20,),
                   Row(
                     children: [

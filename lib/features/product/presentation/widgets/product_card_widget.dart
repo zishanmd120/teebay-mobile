@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/format_date.dart';
 import '../../data/models/products_response.dart';
+import 'read_more_widget.dart';
 
 class ProductCardWidget extends StatefulWidget {
   final ProductsResponse  productsModel;
@@ -50,19 +51,8 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
               Text(widget.productsModel.rentOption ?? ""),
             ],
           ),
-          Text(widget.productsModel.description ?? "",
-            maxLines: selectedMaxLines ? null : 3,
-            overflow: selectedMaxLines ? null : TextOverflow.ellipsis,
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: GestureDetector(
-              onTap: (){
-                selectedMaxLines = !selectedMaxLines;
-                setState(() {});
-              },
-              child: const Text("see more", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.orange,),),
-            ),
+          ReadMoreTextWidget(
+            text: widget.productsModel.description ?? "",
           ),
           Text("Date Posted: ${FormatDate().formatDateWithSuffix(DateTime.parse(widget.productsModel.datePosted ?? ""))}"),
         ],
