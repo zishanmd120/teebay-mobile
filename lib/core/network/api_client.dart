@@ -65,7 +65,8 @@ class NetworkHttpClient {
         return NetworkResponse.withSuccess(utf8.decode(response.bodyBytes), decodedBody['message'], response.statusCode);
       } else {
         final decodedBody = jsonDecode(utf8.decode(response.bodyBytes));
-        final errors = decodedBody['error'];
+        final errors = decodedBody['error'] ?? decodedBody['email'] ??
+            decodedBody['message'] ?? decodedBody['detail'] ?? decodedBody.toString();
         String firstError = '';
         if (errors is Map) {
           for (var field in errors.entries) {
@@ -75,7 +76,9 @@ class NetworkHttpClient {
             }
           }
         }
-        return NetworkResponse.withFailure(firstError.isNotEmpty ? firstError : errors, response.statusCode);
+        print(firstError);
+        print(errors);
+        return NetworkResponse.withFailure(firstError.isNotEmpty ? firstError : errors[0], response.statusCode);
       }
     } on TimeoutException {
       _logger.errorLog("TimeoutException");

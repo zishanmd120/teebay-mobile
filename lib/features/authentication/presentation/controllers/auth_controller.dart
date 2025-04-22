@@ -76,8 +76,8 @@ class AuthController extends GetxController {
       showErrorSnackBar("Failed", l.message,);
       isSignupLoading.value = false;
     }, (r) {
+      Get.offAllNamed(AppRoutes.login);
       isSignupLoading.value = false;
-      Get.back();
       showSuccessSnackBar("Success", "Signup Success",);
     });
   }

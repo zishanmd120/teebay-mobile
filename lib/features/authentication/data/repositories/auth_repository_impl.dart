@@ -48,6 +48,7 @@ class AuthRepositoryImpl implements AuthRepository {
     final networkResponse = await _authSource.signup(fName, lName, email, address, password,
       _sharedPreferences.getString("fcm_token") ?? "",
     );
+    print(networkResponse.data);
     if (networkResponse.status == 408) {
       print(networkResponse.message);
       return Left(Failure(networkResponse.message ?? ""));

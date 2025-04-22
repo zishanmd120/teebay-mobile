@@ -15,7 +15,7 @@ class SplashController extends GetxController {
       if(preferences.getBool("biometric_enabled") != null || preferences.getBool("biometric_enabled") == true){
         Get.offAllNamed(AppRoutes.biometric);
       } else {
-        Get.toNamed(AppRoutes.allProducts);
+        Get.offAllNamed(AppRoutes.allProducts);
       }
     } else {
       Get.offAllNamed(AppRoutes.login);
