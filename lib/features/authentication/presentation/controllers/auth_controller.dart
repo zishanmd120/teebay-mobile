@@ -38,7 +38,7 @@ class AuthController extends GetxController {
     }, (r) {
     print("Login Success");
       isLoginLoading.value = false;
-      Get.toNamed(AppRoutes.allProducts);
+      Get.offAllNamed(AppRoutes.allProducts);
     });
   }
 
