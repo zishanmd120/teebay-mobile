@@ -23,9 +23,7 @@ class AuthRepositoryImpl implements AuthRepository {
     if (networkResponse.status == 408) {
       return Left(Failure(networkResponse.message ?? ""));
     }
-    print("hooollllaa ${networkResponse.data}");
     if (networkResponse.data != null) {
-      print("hooollllaa");
       try {
         final response = LoginResponse.fromJson(jsonDecode(networkResponse.data));
         if (response.user?.id != null) {
