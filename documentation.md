@@ -1,47 +1,122 @@
-## Teebay Doc
-
 1. Authentication – Login & Signup
-✔️ Approach: Implemented using Flutter and GetX for state management.
-API calls made using http.
-Basic auth token is saved in SharedPreferences after successful login.
-Login & Signup includes form validation and API error handling.
+   Approach:
+
+Built using Flutter and GetX for state management.
+
+API calls handled via the http package.
+
+After successful login, the basic auth token is saved in SharedPreferences.
+
+Input validations include:
+
+Email format validation
+
+Password: must be 6 digits minimum
+
+Name field cannot be empty
+
+Password and Confirm Password must match
+
+Validation is handled via TextFormField validators.
+
+API is only triggered if all fields are validated.
+
+Dynamic error handling for API responses (supports both Map and List error formats).
 
 Corner Cases Handled:
-Network failures and incorrect credentials show proper user-facing messages.
-Prevented multiple login taps with loading state.
-Password confirmation mismatch handled with client-side validation.
 
+Displays user-friendly error messages for network issues and invalid credentials.
+
+Prevents multiple login attempts using a loading state.
+
+Client-side password confirmation check prevents unnecessary API calls.
 
 2. All Products List Page
-✔️ Approach: Used ListView.builder to show product listings.
-Data is fetched from the backend for all users. 
-User can see their own & others products and buy / rent products.
+   Approach:
 
-Corner Cases Handled:
-Users own products can not buy / rent.
+Uses ListView.builder to render the product list.
 
-3. Transaction
-✔️ Approach:Implemented using TabBar and TabBarView to show:
-Bought products
-Sold products
-Borrowed items
-Lent items
-Each tab loads its respective data list via API.
+Data is fetched from the backend and shows all users' products.
+
+Users can view, buy, or rent products except their own.
 
 Corner Cases:
-Used Obx with loading indicators for each list independently.
-build() API call inside item widgets.
 
-4. My Products List Page
-✔️ Approach:This page shows products listed by the current user (both for sale and rent).
-Fetches product list on init, and uses Obx to update UI dynamically.
-User can update their data. 
+Products created by the logged-in user do not show Buy/Rent buttons.
 
-5. Product Buy / Rent Page
-✔️ Approach: Product details shown after user taps a card.
-Separate actions for Buy and Rent.
-Order confirmation dialogs and transaction creation APIs integrated.
+Logic checks if sellerId == currentUserId.
+
+3. Add Product
+   Approach:
+
+Allows users to upload products with images and details.
+
+Form submission triggers an API call.
 
 Corner Cases:
-Prevented double taps on Buy/Rent buttons.
-Managed navigation stack cleanly post-purchase.
+
+Errors are shown via toast messages, helping users identify what went wrong.
+
+4. Transactions
+   Approach:
+
+Tab-based UI using TabBar and TabBarView.
+
+Shows:
+
+Bought Products
+
+Sold Products
+
+Borrowed Items
+
+Lent Items
+
+Two APIs used:
+
+One for transactions
+
+One for rentals
+
+Filtering based on sellerId / buyerId to ensure users see only their relevant data.
+
+Corner Cases:
+
+Independent loading states using Obx for each tab.
+
+build() method in item widgets includes API calls with safeguards.
+
+5. My Products List Page
+   Approach:
+
+Displays products listed by the current user (both for sale and rent).
+
+Data is fetched during initState() and updated dynamically using Obx.
+
+Allows product updates directly from this screen.
+
+6. Product Buy / Rent Page
+   Approach:
+
+Tapping a product card navigates to this page with full product details.
+
+Users can choose to Buy or Rent the item.
+
+Order confirmation dialogs appear before triggering the transaction API.
+
+On successful transaction:
+
+A notification is displayed.
+
+Tapping it navigates to the relevant page.
+
+Corner Cases:
+
+Prevents double taps on Buy/Rent buttons using button state or debounce.
+
+Handles navigation cleanup post-transaction to avoid stack issues.
+
+7. Token & User ID Storage
+   User ID and auth token are saved in SharedPreferences.
+
+Used for authenticated API calls across the app.

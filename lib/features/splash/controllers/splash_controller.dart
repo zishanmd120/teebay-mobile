@@ -1,7 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:teebay_mobile/main.dart';
 import 'package:teebay_mobile/main/routes/app_routes.dart';
 
 class SplashController extends GetxController {
