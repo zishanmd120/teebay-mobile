@@ -58,7 +58,7 @@ class ProductDetailsPage extends GetView<ProductController> {
                   const SizedBox(height: 20,),
                   Text("Date Posted: ${FormatDate().formatDateWithSuffix(DateTime.parse(controller.item?.datePosted ?? ""))}"),
                   const SizedBox(height: 50,),
-                  if(controller.item?.seller.toString() != preferences.getString("user_id").toString())
+                  if(controller.item?.seller.toString() != controller.sharedPreference.getString("user_id").toString())
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
