@@ -28,8 +28,6 @@ class MyStoreScreen extends GetView<ProductController> {
                 itemCount: controller.myProductsList.length,
                 itemBuilder: (context, index){
                   var item = controller.myProductsList[index];
-                  var boolVal = controller.sharedPreference.getString("user_id").toString() == item.seller.toString();
-                  print("boolVal: $boolVal");
                   return GestureDetector(
                     child: Stack(
                       children: [

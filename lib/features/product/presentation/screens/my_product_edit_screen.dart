@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:teebay_mobile/features/product/presentation/controllers/product_controller.dart';
 
+import '../widgets/category_selector_widget.dart';
 import '../widgets/product_text_field_widget.dart';
 
 class MyProductEditScreen extends GetView<ProductController> {
@@ -27,48 +28,12 @@ class MyProductEditScreen extends GetView<ProductController> {
               ),
               const SizedBox(height: 15,),
               FieldTitle(title: "Categories",),
-              Obx(()=> controller.isCatSet.value ? const SizedBox.shrink() :
-                MultiDropdown<String>(
-                  items: controller.categoriesList.map((category) {
-                    return DropdownItem(
-                      label: category.label ?? '',
-                      value: category.value ?? '',
-                    );
-                  }).toList(),
-                  controller: controller.multiSelectController.value,
-                  enabled: true,
-                  searchEnabled: false,
-                  chipDecoration: ChipDecoration(
-                    backgroundColor: Colors.blue.shade100,
-                    wrap: true,
-                    runSpacing: 2,
-                    spacing: 10,
-                  ),
-                  fieldDecoration: FieldDecoration(
-                    hintText: 'Categories',
-                    hintStyle: const TextStyle(color: Colors.black87),
-                    showClearIcon: false,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: const BorderSide(color: Colors.black87),
-                    ),
-                  ),
-                  dropdownDecoration: const DropdownDecoration(
-                    marginTop: 2,
-                    maxHeight: 150,
-                  ),
-                  dropdownItemDecoration: DropdownItemDecoration(
-                    selectedIcon: const Icon(Icons.check_box, color: Colors.green),
-                    disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
-                  ),
-                  onSelectionChange: (selectedItems) {
-                    controller.selectedCategoryList = selectedItems;
-                    print(controller.selectedCategoryList);
-                  },
-                ),
+              CategorySelectorWidget(
+                totalCategories: controller.categoriesList,
+                selectedCategories: controller.selectedCategoryList,
+                onSelectionChanged: (selectedValue) {
+                  controller.selectedCategoryList = selectedValue;
+                },
               ),
               FieldTitle(title: "Description",),
               ProductTextFieldWidget(

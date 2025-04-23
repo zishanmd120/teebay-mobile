@@ -1,15 +1,10 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:multi_dropdown/multi_dropdown.dart';
-import 'package:teebay_mobile/core/utils/endpoints.dart';
-import 'package:teebay_mobile/features/product/data/models/categories_model.dart';
 
-import '../controllers/product_controller.dart';
+import '../controllers/add_product_controller.dart';
+import '../widgets/category_selector_widget.dart';
 import '../widgets/product_text_field_widget.dart';
 
 final List<Widget> pages = [
@@ -21,7 +16,7 @@ final List<Widget> pages = [
   const PageSummary(),
 ];
 
-class AddProductScreen extends GetView<ProductController> {
+class AddProductScreen extends GetView<AddProductController> {
   const AddProductScreen({super.key});
 
   @override
@@ -81,7 +76,7 @@ class PageOne extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ProductController>();
+    final controller = Get.find<AddProductController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -108,46 +103,9 @@ class PageTwo extends StatefulWidget {
 
 class _PageTwoState extends State<PageTwo> {
 
-  String selectedCategory = "";
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    fetchCategories();
-  }
-
-  final MultiSelectController<String> _controller = MultiSelectController<String>();
-  List<CategoriesResponse> categoriesList = [];
-  bool isLoding = false;
-  Future<void> fetchCategories() async {
-    setState(() {
-      isLoding = true;
-    });
-    final response = await http.get(Uri.parse(Endpoints.categories,),);
-
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes,),);
-
-      categoriesList = jsonData
-          .map((item) => CategoriesResponse.fromJson(item))
-          .toList();
-      print(jsonData);
-      setState(() {
-        isLoding = false;
-        // data = jsonData['title'];
-      });
-    } else {
-      setState(() {
-        isLoding = false;
-        // data = 'Error: ${response.statusCode}';
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ProductController>();
+    final controller = Get.find<AddProductController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -156,48 +114,11 @@ class _PageTwoState extends State<PageTwo> {
           padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
           child: Text("Select category", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold,),),
         ),
-        isLoding ? const CupertinoActivityIndicator() :
-        MultiDropdown<String>(
-          items: categoriesList.map((category) {
-            return DropdownItem(
-              label: category.label ?? '',
-              value: category.value ?? '',
-            );
-          }).toList(),
-          controller: _controller,
-          enabled: true,
-          searchEnabled: false,
-          chipDecoration: ChipDecoration(
-            backgroundColor: Colors.blue.shade100,
-            wrap: true,
-            runSpacing: 2,
-            spacing: 10,
-          ),
-          fieldDecoration: FieldDecoration(
-            hintText: 'Categories',
-            hintStyle: const TextStyle(color: Colors.black87),
-            showClearIcon: false,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: const BorderSide(color: Colors.black87),
-            ),
-          ),
-          dropdownDecoration: const DropdownDecoration(
-            marginTop: 2,
-            maxHeight: 150,
-          ),
-          dropdownItemDecoration: DropdownItemDecoration(
-            selectedIcon: const Icon(Icons.check_box, color: Colors.green),
-            disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
-          ),
-          onSelectionChange: (selectedItems) {
-            setState(() {
-              controller.selectedCategoryList = selectedItems;
-              print(controller.selectedCategoryList);
-            });
+        CategorySelectorWidget(
+          totalCategories: controller.categoriesList,
+          selectedCategories: controller.selectedCategoryList,
+          onSelectionChanged: (selectedValue) {
+            controller.selectedCategoryList = selectedValue;
           },
         ),
       ],
@@ -210,7 +131,7 @@ class PageThree extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ProductController>();
+    final controller = Get.find<AddProductController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -241,7 +162,7 @@ class _PageFourState extends State<PageFour> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ProductController>();
+    final controller = Get.find<AddProductController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -311,7 +232,7 @@ class _PageFiveState extends State<PageFive> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ProductController>();
+    final controller = Get.find<AddProductController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -368,7 +289,7 @@ class PageSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ProductController>();
+    final controller = Get.find<AddProductController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

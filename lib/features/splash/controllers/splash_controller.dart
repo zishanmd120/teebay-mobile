@@ -10,7 +10,7 @@ class SplashController extends GetxController {
     Future.microtask(() => navigateToRoute());
   }
 
-  navigateToRoute(){
+  navigateToRoute() async{
     if(preferences.getString("user_id") != null){
       if(preferences.getBool("biometric_enabled") != null || preferences.getBool("biometric_enabled") == true){
         Get.offAllNamed(AppRoutes.biometric);

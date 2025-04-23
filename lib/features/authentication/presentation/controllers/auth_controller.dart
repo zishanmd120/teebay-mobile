@@ -96,7 +96,7 @@ class AuthController extends GetxController {
         ),
       );
       if(isAuthSuccess.value){
-        Get.offAllNamed(AppRoutes.allProducts);
+        await Get.offAllNamed(AppRoutes.allProducts);
       }
     } catch (e) {
       print("Authentication error: $e");

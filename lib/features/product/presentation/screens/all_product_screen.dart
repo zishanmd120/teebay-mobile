@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:teebay_mobile/features/product/presentation/controllers/product_controller.dart';
 
 import '../../../../main/routes/app_routes.dart';
-import '../../../transaction/presentation/screens/transaction_screen.dart';
 import '../widgets/product_card_widget.dart';
 
 class AllProductScreen extends GetView<ProductController> {
@@ -62,27 +61,32 @@ class AllProductScreen extends GetView<ProductController> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: Obx(
-            () => controller.isProductLoading.value
-                ? const CupertinoActivityIndicator()
-                : Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0,),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: controller.productsList.length,
-                    itemBuilder: (context, index){
-                      var item = controller.productsList[index];
-                      return GestureDetector(
-                        child: ProductCardWidget(productsModel: item,),
-                        onTap: (){
-                          Get.toNamed(AppRoutes.productDetails);
-                          controller.fetchSingleProduct(item.id ?? 0,);
-                        },
-                      );
-                    },
+      body: RefreshIndicator(
+        onRefresh: () async {
+          controller.fetchProduct();
+        },
+        child: SafeArea(
+          child: Obx(
+              () => controller.isProductLoading.value
+                  ? const CupertinoActivityIndicator()
+                  : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0,),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: controller.productsList.length,
+                      itemBuilder: (context, index){
+                        var item = controller.productsList[index];
+                        return GestureDetector(
+                          child: ProductCardWidget(productsModel: item,),
+                          onTap: (){
+                            Get.toNamed(AppRoutes.productDetails);
+                            controller.fetchSingleProduct(item.id ?? 0,);
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
+          ),
         ),
       ),
       floatingActionButton: GestureDetector(
@@ -94,8 +98,8 @@ class AllProductScreen extends GetView<ProductController> {
           ),
           child: const Icon(Icons.add, color: Colors.white, size: 40,),
         ),
-        onTap: (){
-          Get.toNamed(AppRoutes.addProduct);
+        onTap: () async {
+          await Get.toNamed(AppRoutes.addProduct, arguments: controller.categoriesList);
         },
       ),
     );

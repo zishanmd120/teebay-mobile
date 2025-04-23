@@ -27,7 +27,26 @@ class NetworkHttpClient {
       if (response.statusCode == 200) {
         return NetworkResponse.withSuccess(utf8.decode(response.bodyBytes), "success", response.statusCode);
       } else {
-        return NetworkResponse.withFailure("error", response.statusCode);
+        final decodedBody = jsonDecode(utf8.decode(response.bodyBytes));
+        String firstError = '';
+        if (decodedBody is Map) {
+          for (var entry in decodedBody.entries) {
+            if (entry.value is List && entry.value.isNotEmpty) {
+              final readableKey = entry.key.toString().split('_')
+                  .map((e) => '${e[0].toUpperCase()}${e.substring(1)}').join(' ');
+              firstError = "$readableKey: ${entry.value.first.toString()}";
+              break;
+            } else if (entry.value is String) {
+              firstError = entry.value;
+              break;
+            }
+          }
+        }
+
+        return NetworkResponse.withFailure(
+          firstError.isNotEmpty ? firstError : 'Something went wrong',
+          response.statusCode,
+        );
       }
     } on TimeoutException {
       _logger.errorLog("TimeoutException");
@@ -65,20 +84,25 @@ class NetworkHttpClient {
         return NetworkResponse.withSuccess(utf8.decode(response.bodyBytes), decodedBody['message'], response.statusCode);
       } else {
         final decodedBody = jsonDecode(utf8.decode(response.bodyBytes));
-        final errors = decodedBody['error'] ?? decodedBody['email'] ??
-            decodedBody['message'] ?? decodedBody['detail'] ?? decodedBody.toString();
         String firstError = '';
-        if (errors is Map) {
-          for (var field in errors.entries) {
-            if (field.value is List && field.value.isNotEmpty) {
-              firstError = field.value.first;
+        if (decodedBody is Map) {
+          for (var entry in decodedBody.entries) {
+            if (entry.value is List && entry.value.isNotEmpty) {
+              final readableKey = entry.key.toString().split('_')
+                  .map((e) => '${e[0].toUpperCase()}${e.substring(1)}').join(' ');
+              firstError = "$readableKey: ${entry.value.first.toString()}";
+              break;
+            } else if (entry.value is String) {
+              firstError = entry.value;
               break;
             }
           }
         }
-        print(firstError);
-        print(errors);
-        return NetworkResponse.withFailure(firstError.isNotEmpty ? firstError : errors[0], response.statusCode);
+
+        return NetworkResponse.withFailure(
+          firstError.isNotEmpty ? firstError : 'Something went wrong',
+          response.statusCode,
+        );
       }
     } on TimeoutException {
       _logger.errorLog("TimeoutException");
@@ -104,7 +128,26 @@ class NetworkHttpClient {
       if (response.statusCode == 204) {
         return NetworkResponse.withSuccess(utf8.decode(response.bodyBytes), "success", response.statusCode);
       } else {
-        return NetworkResponse.withFailure("error", response.statusCode);
+        final decodedBody = jsonDecode(utf8.decode(response.bodyBytes));
+        String firstError = '';
+        if (decodedBody is Map) {
+          for (var entry in decodedBody.entries) {
+            if (entry.value is List && entry.value.isNotEmpty) {
+              final readableKey = entry.key.toString().split('_')
+                  .map((e) => '${e[0].toUpperCase()}${e.substring(1)}').join(' ');
+              firstError = "$readableKey: ${entry.value.first.toString()}";
+              break;
+            } else if (entry.value is String) {
+              firstError = entry.value;
+              break;
+            }
+          }
+        }
+
+        return NetworkResponse.withFailure(
+          firstError.isNotEmpty ? firstError : 'Something went wrong',
+          response.statusCode,
+        );
       }
     } on TimeoutException {
       _logger.errorLog("TimeoutException");
@@ -134,7 +177,7 @@ class NetworkHttpClient {
 
       _logger.logUrl(endpoint);
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final decodedBody = jsonDecode(respStr);
         return NetworkResponse.withSuccess(
           respStr,
@@ -143,20 +186,23 @@ class NetworkHttpClient {
         );
       } else {
         final decodedBody = jsonDecode(respStr);
-        final errors = decodedBody['error'];
         String firstError = '';
-
-        if (errors is Map) {
-          for (var field in errors.entries) {
-            if (field.value is List && field.value.isNotEmpty) {
-              firstError = field.value.first;
+        if (decodedBody is Map) {
+          for (var entry in decodedBody.entries) {
+            if (entry.value is List && entry.value.isNotEmpty) {
+              final readableKey = entry.key.toString().split('_')
+                  .map((e) => '${e[0].toUpperCase()}${e.substring(1)}').join(' ');
+              firstError = "$readableKey: ${entry.value.first.toString()}";
+              break;
+            } else if (entry.value is String) {
+              firstError = entry.value;
               break;
             }
           }
         }
 
         return NetworkResponse.withFailure(
-          firstError.isNotEmpty ? firstError : errors.toString(),
+          firstError.isNotEmpty ? firstError : 'Something went wrong',
           response.statusCode,
         );
       }

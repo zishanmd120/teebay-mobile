@@ -2,13 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:teebay_mobile/core/utils/endpoints.dart';
 import 'package:teebay_mobile/features/transaction/domain/usecase/buy_product_interactor.dart';
 import 'package:teebay_mobile/features/transaction/domain/usecase/rent_product_interactor.dart';
 import 'package:teebay_mobile/features/product/data/models/categories_model.dart';
@@ -18,7 +15,6 @@ import 'package:teebay_mobile/features/product/domain/usecase/delete_product_int
 import 'package:teebay_mobile/features/product/domain/usecase/product_details_interactor.dart';
 import 'package:teebay_mobile/features/product/domain/usecase/update_product_interactor.dart';
 
-import '../../../../main.dart';
 import '../../../../main/routes/app_routes.dart';
 import '../../domain/usecase/add_product_interactor.dart';
 import '../../domain/usecase/get_products_interactor.dart';
@@ -49,14 +45,6 @@ class ProductController extends GetxController {
     super.onInit();
     fetchProduct();
     fetchCategories();
-    // pages = [
-    //   const PageOne(),
-    //   const PageTwo(),
-    //   const PageThree(),
-    //   const PageFour(),
-    //   const PageFive(),
-    //   const PageSummary(),
-    // ];
   }
 
   List<String> selectedCategoryList = [];
@@ -72,16 +60,22 @@ class ProductController extends GetxController {
   FocusNode ppFocusNode = FocusNode();
   FocusNode rpFocusNode = FocusNode();
 
-  final PageController pageController = PageController();
+  PageController pageController = PageController();
 
-  // late final List<Widget> pages;
   RxInt currentPage = 0.obs;
   RxBool isLastPage = false.obs;
 
   void nextPage() {
-    if (currentPage.value < pages.length - 1) {
+    if (pageController.hasClients &&
+        pageController.positions.length == 1 &&
+        currentPage.value < pages.length - 1) {
       pageController.nextPage(
-          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      debugPrint('PageController not ready. Retrying...');
+      Future.delayed(const Duration(milliseconds: 100), nextPage); // Retry after a short delay
     }
   }
 
@@ -132,7 +126,7 @@ class ProductController extends GetxController {
   String selectedOption = '';
   List<String> optionTypes = ['Per Hour', 'Per Day',];
 
-  List<ProductsResponse> productsList = [];
+  RxList<ProductsResponse> productsList = <ProductsResponse>[].obs;
   List<ProductsResponse> myProductsList = [];
   RxBool isProductLoading = false.obs;
   fetchProduct() async {
@@ -145,7 +139,7 @@ class ProductController extends GetxController {
         Get.snackbar("Failed", error, backgroundColor: Colors.red, colorText: Colors.white,);
         isProductLoading.value = false;
       }, (r) {
-        productsList = r;
+        productsList.value = r;
         myProductsList = r
             .where((item) => (item.seller ?? -1).toString() == sharedPreference.getString("user_id").toString()).toList();
         isProductLoading.value = false;
@@ -176,14 +170,10 @@ class ProductController extends GetxController {
   TextEditingController desEditingControllerUp = TextEditingController();
   TextEditingController ppEditingControllerUp = TextEditingController();
   TextEditingController rpEditingControllerUp = TextEditingController();
-  final Rx<MultiSelectController<String>> multiSelectController = MultiSelectController<String>().obs;
 
   RxBool isCatSet = false.obs;
   int updateProductId = 0;
   productEditDataSet(ProductsResponse productsModel) {
-    isCatSet.value = true;
-    multiSelectController.value.clearAll();
-    multiSelectController.value.selectWhere((item) => productsModel.categories?.contains(item.value.toLowerCase()) ?? false);
     updateProductId = productsModel.id ?? 0;
     titleEditingControllerUp.text = productsModel.title ?? "";
     desEditingControllerUp.text = productsModel.description ?? "";
@@ -192,7 +182,6 @@ class ProductController extends GetxController {
     selectedOption = productsModel.rentOption == "hour" ? optionTypes[0] : optionTypes[1];
     selectedCategoryList = productsModel.categories ?? [];
     print("++$selectedCategoryList");
-    isCatSet.value = false;
   }
 
   List<CategoriesResponse> categoriesList = [];
@@ -208,15 +197,8 @@ class ProductController extends GetxController {
       isProductLoading.value = false;
     }, (r) {
       categoriesList = r;
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      // multiSelectController.selectWhere((item) => false);
-      // });
-      // productsList = r;
-      // myProductsList = r
-      //     .where((item) => (item.seller ?? -1).toString() == sharedPreference.getString("user_id").toString()).toList();
       isProductLoading.value = false;
-    },
-    );
+    },);
   }
 
   RxBool isUpdateProductLoading = false.obs;
@@ -242,6 +224,7 @@ class ProductController extends GetxController {
         Get.back();
         Get.snackbar("Success", "Product Updated Successfully.", backgroundColor: Colors.green, colorText: Colors.white,);
         fetchProduct();
+        selectedCategoryList.clear();
       }
     });
   }
@@ -329,6 +312,18 @@ class ProductController extends GetxController {
   }
 
   RxBool isProductAdding = false.obs;
+  refreshTextEditingControllers(){
+    currentPage.value = 0;
+    isLastPage.value = false;
+    titleEditingController.clear();
+    descriptionEditingController.clear();
+    ppEditingController.clear();
+    rpEditingController.clear();
+    selectedOption = "";
+    selectedCategoryList.clear();
+    imageFile.value = null;
+  }
+
   addProduct(BuildContext context) async {
     isProductAdding.value = true;
     addProductInteractor.execute(
@@ -350,16 +345,6 @@ class ProductController extends GetxController {
         Get.snackbar("Success", "Product Added Successfully.", backgroundColor: Colors.green, colorText: Colors.white,);
         Get.toNamed(AppRoutes.allProducts);
         fetchProduct();
-        titleEditingController.clear();
-        selectedCategoryList.clear();
-        descriptionEditingController.clear();
-        ppEditingController.clear();
-        rpEditingController.clear();
-        selectedOption = "" ;
-        imageFile.value = null;
-        pageController.jumpTo(0);
-        currentPage.value = 0;
-        onPageChanged(currentPage.value);
       }
     });
   }

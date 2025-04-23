@@ -32,10 +32,12 @@ class ProductDatasource {
       );
     }
 
-    request.files.add(await http.MultipartFile.fromPath(
-      'product_image',
-      productImage,
-    ));
+    if(productImage != ""){
+      request.files.add(await http.MultipartFile.fromPath(
+        'product_image',
+        productImage,
+      ));
+    }
 
     return await _httpClient.postMultipart(
       endpoint: Endpoints.products,
